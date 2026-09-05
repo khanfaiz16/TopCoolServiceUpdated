@@ -5,17 +5,12 @@ import SEO from '../components/SEO';
 import BookingForm from './BookingForm';
 import { allBrands, contactDetails } from '../data/siteData';
 import { getPageMeta } from '../data/seoConfig';
-import { getApplianceSiblings } from '../data/brandServiceData';
 import { applianceServiceSchema } from '../data/schema';
 
 export default function ServicePage({ service }) {
   if (!service) return null;
 
   const canonicalPath = `/${service.slug}/`;
-  // Brand-specific landing pages that exist for this appliance, e.g. the Bosch,
-  // IFB, Siemens and LG dishwasher pages when this is the dishwasher page.
-  const brandPages = getApplianceSiblings(service.slug, null);
-
   const schemaData = applianceServiceSchema(service);
 
   return (
@@ -78,23 +73,6 @@ export default function ServicePage({ service }) {
                 <span key={brand} className="brand-pill">{brand}</span>
               ))}
             </div>
-
-            {brandPages.length > 0 && (
-              <>
-                <h3>Brand-Specific {service.title} Pages (Pune)</h3>
-                <p>
-                  Detailed repair guides, common faults and FAQs for our Pune service pages:
-                </p>
-                <div className="brands-scroll">
-                  {brandPages.map((entry) => (
-                    <Link key={entry.slug} to={`/${entry.slug}/`} className="brand-pill">
-                      {entry.brand} {entry.appliance} repair &amp; service in Pune
-                    </Link>
-                  ))}
-                </div>
-              </>
-            )}
-
             <div className="quick-call-cta">
               <h3>Need Immediate Help?</h3>
               <p>Speak directly with our technical support team in Mumbai.</p>

@@ -27,10 +27,6 @@ import DishwasherRepair from './pages/DishwasherRepair';
 // Dynamic Hyper-Local Programmatic SEO Page
 import LocationBrandService from './pages/LocationBrandService';
 
-// Brand + Appliance Landing Pages (one component, driven by data)
-import BrandServicePage from './pages/BrandServicePage';
-import { brandServices } from './data/brandServiceData';
-
 export default function App() {
   const location = useLocation();
 
@@ -68,18 +64,6 @@ export default function App() {
           <Route path="/microwave-repair/" element={<MicrowaveRepair />} />
           <Route path="/dryer-repair/" element={<DryerRepair />} />
           <Route path="/dishwasher-repair/" element={<DishwasherRepair />} />
-
-          {/* Brand + Appliance Landing Pages */}
-          {/* e.g. /bosch-dishwasher-service-pune/ - generated from
-              src/data/brandServiceData.js so the routes, the sitemap and the
-              page content can never drift apart. */}
-          {brandServices.map((entry) => (
-            <Route
-              key={entry.slug}
-              path={`/${entry.slug}/`}
-              element={<BrandServicePage slug={entry.slug} />}
-            />
-          ))}
 
           {/* Programmatic SEO Dynamic Route */}
           {/* Matches URLs like: /repair/haier-ac-repair-in-juhu/

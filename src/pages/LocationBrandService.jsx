@@ -66,11 +66,11 @@ export default function LocationBrandService() {
     <div className="service-detail-view">
       {/* These brand x service x locality combinations are generated
           automatically, so there are well over a thousand of them and they are
-          necessarily thin and near-identical. They stay useful as landing pages
-          for direct visitors, but they are marked noindex/follow so they do not
-          compete with (or cannibalise) the hand-written brand pages such as
-          /bosch-dishwasher-service-pune/. Links are still followed, so they
-          pass internal link equity on to the canonical pages. */}
+          necessarily thin and near-identical. They still work for anyone who
+          arrives directly, but they are marked noindex/follow so that a
+          thousand near-duplicate pages are not offered to search engines.
+          Links on them are still followed, so they pass link equity on to the
+          real pages. */}
       <SEO
         title={pageTitle}
         description={metaDescription}

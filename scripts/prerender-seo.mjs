@@ -28,9 +28,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { siteConfig, staticPageMeta, absoluteUrl } from '../src/data/seoConfig.js';
-import { brandServices } from '../src/data/brandServiceData.js';
 import { servicesList, faqsData } from '../src/data/siteData.js';
-import { applianceServiceSchema, brandServiceSchema, faqPageSchema, defaultSchema } from '../src/data/schema.js';
+import { applianceServiceSchema, faqPageSchema, defaultSchema } from '../src/data/schema.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
@@ -52,8 +51,6 @@ function schemaFor(path) {
   const service = servicesList.find((s) => `/${s.slug}/` === path);
   if (service) return applianceServiceSchema(service);
 
-  const brandPage = brandServices.find((entry) => `/${entry.slug}/` === path);
-  if (brandPage) return brandServiceSchema(brandPage);
 
   return [defaultSchema()];
 }
@@ -68,17 +65,6 @@ function collectRoutes() {
     image: siteConfig.defaultImage,
     priority: meta.priority,
   }));
-
-  for (const entry of brandServices) {
-    routes.push({
-      path: `/${entry.slug}/`,
-      title: entry.title,
-      description: entry.description,
-      keywords: entry.keywords,
-      image: entry.image,
-      priority: '0.9',
-    });
-  }
 
   return routes;
 }

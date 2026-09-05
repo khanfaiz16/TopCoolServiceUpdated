@@ -25,7 +25,6 @@ runtime and the values baked into the static HTML at build time cannot drift.
 | File | Responsibility |
 | --- | --- |
 | `src/data/seoConfig.js` | Site config + title/description/keywords for every fixed page. |
-| `src/data/brandServiceData.js` | Content and metadata for the twelve brand + appliance landing pages. |
 | `src/data/schema.js` | JSON-LD builders (Service, BreadcrumbList, FAQPage, LocalBusiness). |
 | `src/components/SEO.jsx` | Applies title, description, keywords, canonical, Open Graph, Twitter, robots and JSON-LD to `<head>` at runtime. |
 | `scripts/prerender-seo.mjs` | Post-build step: writes a static HTML file per route with the head pre-resolved, and generates `dist/sitemap.xml`. |
@@ -40,12 +39,6 @@ otherwise show the home page's preview card. The prerender step resolves the
 
 `npm run build` runs Vite and then the prerender step. `npm run build:only`
 runs Vite alone, which is useful when debugging a build issue.
-
-### Adding a brand page
-
-Add an entry to `brandServices` in `src/data/brandServiceData.js`. The route,
-the navigation links, the sitemap entry and the prerendered HTML are all
-generated from that one entry.
 
 ### Deployment requirement
 
