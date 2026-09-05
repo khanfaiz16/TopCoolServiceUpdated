@@ -32,33 +32,6 @@ export default function ServiceAreas() {
           ))}
         </div>
 
-        {/* Localized SEO Keyword Link Matrix */}
-        <div className="seo-links-matrix section">
-          <h2 className="section-title">Popular Doorstep Appliance Services by Locality</h2>
-          <p className="section-subtitle">Select your brand and local area for targeted 90-minute service</p>
-          
-          <div className="matrix-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
-            {servicesList.map((service) =>
-              allBrands.map((brand) =>
-                serviceAreas.map((area) => {
-                  const areaSlug = area.toLowerCase().replace(/\s+/g, '-');
-                  const brandSlug = brand.toLowerCase();
-                  return (
-                    <Link
-                      key={`${service.slug}-${brandSlug}-${areaSlug}`}
-                      to={`/repair/${brandSlug}-${service.slug}-in-${areaSlug}/`}
-                      className="brand-pill"
-                      style={{ fontSize: '0.8rem', padding: '0.4rem 0.8rem', textDecoration: 'none' }}
-                    >
-                      {brand} {service.title.split(' ')[0]} in {area}
-                    </Link>
-                  );
-                })
-              )
-            )}
-          </div>
-        </div>
-
         {/* Call-to-Action Banner */}
         <div className="text-center call-banner">
           <h3>Need a Technician in Your Area Today?</h3>
