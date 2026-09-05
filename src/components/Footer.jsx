@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Clock, Wrench } from 'lucide-react';
 import { contactDetails, servicesList } from '../data/siteData';
+import { brandServices } from '../data/brandServiceData';
 
 export default function Footer() {
   return (
@@ -63,6 +64,21 @@ export default function Footer() {
             <a href={`mailto:${contactDetails.email}`}>{contactDetails.email}</a>
           </div>
         </div>
+      </div>
+
+      {/* Site-wide links to the brand landing pages, so every one of them is
+          reachable in a single click from any page on the site. */}
+      <div className="container footer-brand-strip">
+        <h4>Brand Repair &amp; Service in Pune</h4>
+        <ul className="footer-brand-links">
+          {brandServices.map((entry) => (
+            <li key={entry.slug}>
+              <Link to={`/${entry.slug}/`}>
+                {entry.brand} {entry.appliance} service Pune
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="footer-bottom">

@@ -2,14 +2,12 @@ import React from 'react';
 import { ShieldCheck, Clock, Award, Users } from 'lucide-react';
 import SEO from '../components/SEO';
 import { allBrands } from '../data/siteData';
+import { getPageMeta } from '../data/seoConfig';
 
 export default function About() {
   return (
     <div className="about-page">
-      <SEO
-        title="About Us - Top Cool Service Mumbai"
-        description="Learn more about Top Cool Service, Mumbai's trusted appliance repair specialists offering doorstep services across Dahisar, Bandra, and beyond."
-      />
+      <SEO {...getPageMeta('/about/')} />
 
       <section className="page-header">
         <div className="container">

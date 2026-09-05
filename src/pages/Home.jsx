@@ -5,6 +5,7 @@ import SEO from '../components/SEO';
 import Feedback from '../components/Feedback';
 import BookingForm from './BookingForm';
 import { contactDetails, servicesList, serviceAreas, allBrands, faqsData } from '../data/siteData';
+import { getPageMeta } from '../data/seoConfig';
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState(null);
@@ -15,11 +16,7 @@ export default function Home() {
 
   return (
     <div>
-      <SEO
-        title="Doorstep Appliance Repair in Mumbai | 24/7 Service"
-        description="Certified repair technicians for AC, Fridge, Washing Machine, Dryer, Microwave, and Dishwasher across Bandra, Andheri, Dahisar, Virar, and all Mumbai."
-        keywords="AC repair Mumbai, Fridge repair Bandra, Washing machine repair Dahisar, Appliance service Mumbai"
-      />
+      <SEO {...getPageMeta('/')} />
 
       {/* Hero Section with Online Background */}
       <section className="hero-section">
@@ -76,7 +73,7 @@ export default function Home() {
             {servicesList.map((item) => (
               <Link to={`/${item.slug}/`} key={item.slug} className="service-card">
                 <div className="service-img-wrap">
-                  <img src={item.image} alt={item.title} loading="lazy" />
+                  <img src={item.image} alt={`${item.title} at a customer home in Mumbai`} loading="lazy" />
                 </div>
                 <div className="service-body">
                   <h3>{item.title}</h3>
@@ -119,7 +116,7 @@ export default function Home() {
                   <h4>{f.q}</h4>
                   <span>{openFaq === i ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
                 </div>
-                {openFaq === i && <p className="faq-a">{f.a}</p>}
+                <p className={`faq-a${openFaq === i ? ' is-open' : ''}`}>{f.a}</p>
               </div>
             ))}
           </div>

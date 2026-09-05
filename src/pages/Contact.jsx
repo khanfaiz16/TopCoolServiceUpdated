@@ -3,14 +3,12 @@ import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import SEO from '../components/SEO';
 import BookingForm from './BookingForm';
 import { contactDetails } from '../data/siteData';
+import { getPageMeta } from '../data/seoConfig';
 
 export default function Contact() {
   return (
     <div className="contact-page">
-      <SEO
-        title="Contact Top Cool Service | Book Technician"
-        description="Contact Top Cool Service for doorstep appliance repair in Mumbai. Call +91 99204 35051 or send your booking request online."
-      />
+      <SEO {...getPageMeta('/contact/')} />
 
       <section className="page-header">
         <div className="container">

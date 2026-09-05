@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import SEO from '../components/SEO';
 import { faqsData } from '../data/siteData';
+import { getPageMeta } from '../data/seoConfig';
+import { faqPageSchema } from '../data/schema';
 
 export default function FAQ() {
   const [openFaq, setOpenFaq] = useState(null);
+  // Memoised so toggling an accordion item does not rebuild the JSON-LD.
+  const faqSchema = useMemo(() => faqPageSchema(faqsData), []);
 
   const toggleFaq = (idx) => {
     setOpenFaq(openFaq === idx ? null : idx);
@@ -12,10 +16,7 @@ export default function FAQ() {
 
   return (
     <div className="faq-page">
-      <SEO
-        title="Frequently Asked Questions - Top Cool Service"
-        description="Find answers to common questions about appliance repair turnaround times, spares warranties, and pricing in Mumbai."
-      />
+      <SEO {...getPageMeta('/faq/')} schemaData={faqSchema} />
 
       <section className="page-header">
         <div className="container">
@@ -32,7 +33,7 @@ export default function FAQ() {
                 <h4>{f.q}</h4>
                 <span>{openFaq === i ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
               </div>
-              {openFaq === i && <p className="faq-a">{f.a}</p>}
+              <p className={`faq-a${openFaq === i ? ' is-open' : ''}`}>{f.a}</p>
             </div>
           ))}
         </div>
