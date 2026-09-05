@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 // Global Layout Components
 import Navbar from './components/Navbar';
@@ -28,6 +28,17 @@ import DishwasherRepair from './pages/DishwasherRepair';
 import LocationBrandService from './pages/LocationBrandService';
 
 export default function App() {
+  const location = useLocation();
+
+  // Automatically track every page transition in Google Analytics
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'page_view', {
+        page_path: location.pathname + location.search,
+      });
+    }
+  }, [location]);
+
   return (
     <div className="site-wrapper">
       {/* Ensures window jumps to top on navigation */}
