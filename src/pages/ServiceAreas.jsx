@@ -1,17 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { MapPin, Phone } from 'lucide-react';
 import SEO from '../components/SEO';
-import { serviceAreas, contactDetails, allBrands, servicesList } from '../data/siteData';
+import { serviceAreas, contactDetails } from '../data/siteData';
+import { getPageMeta } from '../data/seoConfig';
 
 export default function ServiceAreas() {
   return (
     <div className="service-areas-page">
-      <SEO
-        title="Doorstep Appliance Service Areas in Mumbai"
-        description="We serve Bandra, BKC, Kalina, Andheri, Santacruz, Vasai, Virar, Nallsopara, Powai, Dahisar, Miraroad, Colaba, Juhu, and Marine Lines."
-        keywords="Appliance repair Mumbai, AC repair Bandra, Fridge service Andheri, Washing machine repair Dahisar"
-      />
+      <SEO {...getPageMeta('/service-areas/')} />
 
       <section className="page-header">
         <div className="container">

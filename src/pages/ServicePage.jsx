@@ -4,17 +4,18 @@ import { CheckCircle, Shield, Clock, Phone, MessageCircle } from 'lucide-react';
 import SEO from '../components/SEO';
 import BookingForm from './BookingForm';
 import { allBrands, contactDetails } from '../data/siteData';
+import { getPageMeta } from '../data/seoConfig';
+import { applianceServiceSchema } from '../data/schema';
 
 export default function ServicePage({ service }) {
   if (!service) return null;
 
+  const canonicalPath = `/${service.slug}/`;
+  const schemaData = applianceServiceSchema(service);
+
   return (
     <div className="service-detail-view">
-      <SEO
-        title={`${service.title} in Mumbai`}
-        description={`Fast doorstep ${service.title.toLowerCase()} across Mumbai. Genuine spare parts, 90-min technician arrival, and warranty on all repairs.`}
-        keywords={`${service.title} Mumbai, appliance repair Dahisar, appliance service Bandra, genuine spare parts`}
-      />
+      <SEO {...getPageMeta(canonicalPath)} image={service.image} schemaData={schemaData} />
 
       <section className="page-header">
         <div className="container">
@@ -29,7 +30,12 @@ export default function ServicePage({ service }) {
           {/* Main Content Area */}
           <div className="detail-info">
             <div className="detail-img-box">
-              <img src={service.image} alt={service.title} className="detail-banner" />
+              <img
+                src={service.image}
+                alt={`${service.title} carried out at a customer's home in Mumbai`}
+                className="detail-banner"
+                loading="lazy"
+              />
             </div>
 
             <h2>Comprehensive Solutions for {service.title}</h2>
@@ -67,7 +73,6 @@ export default function ServicePage({ service }) {
                 <span key={brand} className="brand-pill">{brand}</span>
               ))}
             </div>
-
             <div className="quick-call-cta">
               <h3>Need Immediate Help?</h3>
               <p>Speak directly with our technical support team in Mumbai.</p>

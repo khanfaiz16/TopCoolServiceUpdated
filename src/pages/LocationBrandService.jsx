@@ -6,12 +6,34 @@ import BookingForm from './BookingForm';
 import { servicesList, serviceAreas, allBrands, contactDetails } from '../data/siteData';
 
 export default function LocationBrandService() {
-  const { serviceSlug, brandSlug, locationSlug } = useParams();
+  const { pageSlug } = useParams();
 
-  // Normalize inputs
+  // The route captures the whole slug in one param, because React Router only
+  // supports dynamic params that span a complete path segment. Rebuild the
+  // three parts here: "<brand>-<service>-in-<location>", e.g.
+  // "bosch-dishwasher-repair-in-marine-lines". We split on the LAST "-in-" so
+  // multi-word localities keep their hyphens.
+  const slug = pageSlug || '';
+  const separatorIndex = slug.lastIndexOf('-in-');
+  const brandAndService = separatorIndex > -1 ? slug.slice(0, separatorIndex) : slug;
+  const locationSlug = separatorIndex > -1 ? slug.slice(separatorIndex + 4) : '';
+  const firstDash = brandAndService.indexOf('-');
+  const brandSlug = firstDash > -1 ? brandAndService.slice(0, firstDash) : brandAndService;
+  const serviceSlug = firstDash > -1 ? brandAndService.slice(firstDash + 1) : '';
+
+  // Normalize inputs. Slugs are hyphenated while the source data is not, so
+  // compare on a form where hyphens and spaces are equivalent ("marine-lines"
+  // has to match "Marine Lines"). Anything we cannot match falls back to a
+  // title-cased version of the slug rather than the raw slug.
+  const normalize = (value) => (value || '').toLowerCase().replace(/[\s-]+/g, ' ').trim();
+  const titleCase = (value) =>
+    normalize(value).replace(/\b\w/g, (character) => character.toUpperCase());
+
   const service = servicesList.find((s) => s.slug === serviceSlug) || servicesList[0];
-  const matchedBrand = allBrands.find((b) => b.toLowerCase() === brandSlug?.toLowerCase()) || brandSlug;
-  const matchedLocation = serviceAreas.find((loc) => loc.toLowerCase() === locationSlug?.toLowerCase()) || locationSlug;
+  const matchedBrand =
+    allBrands.find((b) => normalize(b) === normalize(brandSlug)) || titleCase(brandSlug);
+  const matchedLocation =
+    serviceAreas.find((loc) => normalize(loc) === normalize(locationSlug)) || titleCase(locationSlug);
 
   const pageTitle = `${matchedBrand} ${service.title} in ${matchedLocation}`;
   const metaDescription = `Looking for certified ${matchedBrand} ${service.title.toLowerCase()} in ${matchedLocation}, Mumbai? 90-min doorstep arrival, 100% genuine spares, and repair warranty.`;
@@ -42,16 +64,20 @@ export default function LocationBrandService() {
 
   return (
     <div className="service-detail-view">
+      {/* These brand x service x locality combinations are generated
+          automatically, so there are well over a thousand of them and they are
+          necessarily thin and near-identical. They still work for anyone who
+          arrives directly, but they are marked noindex/follow so that a
+          thousand near-duplicate pages are not offered to search engines.
+          Links on them are still followed, so they pass link equity on to the
+          real pages. */}
       <SEO
         title={pageTitle}
         description={metaDescription}
         keywords={`${matchedBrand} ${service.slug} ${matchedLocation}, ${matchedBrand} appliance service ${matchedLocation}, doorstep repair Mumbai`}
-      />
-
-      {/* JSON-LD Structured Data Injection */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+        robots="noindex, follow"
+        image={service.image}
+        schemaData={schemaData}
       />
 
       <section className="page-header">

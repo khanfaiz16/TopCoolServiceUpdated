@@ -624,10 +624,15 @@
 }
 
 .faq-a {
+  display: none;
   margin-top: 0.8rem;
   color: #475569;
   font-size: 0.95rem;
   line-height: 1.5;
+}
+
+.faq-a.is-open {
+  display: block;
 }
 
 /* Contact Page Layout */

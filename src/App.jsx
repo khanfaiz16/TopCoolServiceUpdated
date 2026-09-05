@@ -67,11 +67,11 @@ export default function App() {
           <Route path="/dishwasher-repair/" element={<DishwasherRepair />} />
 
           {/* Programmatic SEO Dynamic Route */}
-          {/* Matches URLs like: /repair/haier-ac-repair-in-juhu/ */}
-          <Route
-            path="/repair/:brandSlug-:serviceSlug-in-:locationSlug/"
-            element={<LocationBrandService />}
-          />
+          {/* Matches URLs like: /repair/haier-ac-repair-in-juhu/
+              React Router only supports dynamic params that span a whole path
+              segment, so the combined slug is captured in one param here and
+              split inside LocationBrandService. */}
+          <Route path="/repair/:pageSlug/" element={<LocationBrandService />} />
 
           {/* Fallback 404 Route */}
           <Route path="*" element={<NotFound />} />

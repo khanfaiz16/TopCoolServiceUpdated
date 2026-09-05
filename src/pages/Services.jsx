@@ -2,14 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { servicesList } from '../data/siteData';
+import { getPageMeta } from '../data/seoConfig';
 
 export default function Services() {
   return (
     <div className="services-page">
-      <SEO
-        title="Appliance Repair Services in Mumbai"
-        description="Comprehensive doorstep repairs for AC, Refrigerators, Washing Machines, Dryers, Microwaves, and Dishwashers in Mumbai."
-      />
+      <SEO {...getPageMeta('/services/')} />
 
       <section className="page-header">
         <div className="container">
@@ -23,7 +21,7 @@ export default function Services() {
           {servicesList.map((item) => (
             <Link to={`/${item.slug}/`} key={item.slug} className="service-card">
               <div className="service-img-wrap">
-                <img src={item.image} alt={item.title} loading="lazy" />
+                <img src={item.image} alt={`${item.title} at a customer home in Mumbai`} loading="lazy" />
               </div>
               <div className="service-body">
                 <h3>{item.title}</h3>
