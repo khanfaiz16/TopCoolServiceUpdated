@@ -4,7 +4,7 @@ export const contactDetails = {
   whatsappRaw: '919920435051',
   email: 'mhussainkhan34@gmail.com',
   address: 'Dahisar, Mumbai, Maharashtra',
-  formspreeId: 'xpwzgabb', // Replace with your Formspree form ID
+  formspreeId: 'mppzlepb', // Replace with your Formspree form ID
 };
 
 export const serviceAreas = [
@@ -45,7 +45,7 @@ export const servicesList = [
     slug: 'ac-repair',
     title: 'AC Repair & Service',
     shortDesc: 'Split, Window & Inverter AC repair, deep jet pump cleaning, gas leakage detection, and PCB fixes.',
-    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1000&q=80',
+    image: '/images/ac.jpg',
     issues: [
       'AC Not Cooling / Less Cooling',
       'Water Leakage from Indoor Unit',
@@ -97,7 +97,7 @@ export const servicesList = [
     slug: 'dryer-repair',
     title: 'Clothes Dryer Repair',
     shortDesc: 'Tumble dryer and condenser dryer heating coil, drive belt, and thermal fuse replacements.',
-    image: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?auto=format&fit=crop&w=1000&q=80',
+    image: '/images/cloth-dryer.jpg',
     issues: [
       'Dryer Runs but Does Not Heat',
       'Drum Not Turning (Broken Belt/Roller)',
@@ -110,7 +110,7 @@ export const servicesList = [
     slug: 'dishwasher-repair',
     title: 'Dishwasher Repair',
     shortDesc: 'Fixing spray arm clogging, drainage blockage, circulation pump failure, and door leaks.',
-    image: 'https://images.unsplash.com/photo-1585837575652-267c041d77d4?auto=format&fit=crop&w=1000&q=80',
+    image: '/images/dish-washer.jpg',
     issues: [
       'Dishes Coming Out Dirty',
       'Water Not Draining at End of Cycle',
