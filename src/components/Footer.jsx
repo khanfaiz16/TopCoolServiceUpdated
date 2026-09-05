@@ -31,7 +31,6 @@ export default function Footer() {
             <li><Link to="/service-areas/">Mumbai Service Areas</Link></li>
             <li><Link to="/faq/">Frequently Asked Questions</Link></li>
             <li><Link to="/contact/">Book Technician</Link></li>
-            <li><a href="/#reviews">Customer Reviews & Feedback</a></li>
           </ul>
         </div>
 
