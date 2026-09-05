@@ -27,6 +27,10 @@ import DishwasherRepair from './pages/DishwasherRepair';
 // Dynamic Hyper-Local Programmatic SEO Page
 import LocationBrandService from './pages/LocationBrandService';
 
+// Brand + Appliance Landing Pages (one component, driven by data)
+import BrandServicePage from './pages/BrandServicePage';
+import { brandServices } from './data/brandServiceData';
+
 export default function App() {
   const location = useLocation();
 
@@ -65,12 +69,24 @@ export default function App() {
           <Route path="/dryer-repair/" element={<DryerRepair />} />
           <Route path="/dishwasher-repair/" element={<DishwasherRepair />} />
 
+          {/* Brand + Appliance Landing Pages */}
+          {/* e.g. /bosch-dishwasher-service-pune/ - generated from
+              src/data/brandServiceData.js so the routes, the sitemap and the
+              page content can never drift apart. */}
+          {brandServices.map((entry) => (
+            <Route
+              key={entry.slug}
+              path={`/${entry.slug}/`}
+              element={<BrandServicePage slug={entry.slug} />}
+            />
+          ))}
+
           {/* Programmatic SEO Dynamic Route */}
-          {/* Matches URLs like: /repair/haier-ac-repair-in-juhu/ */}
-          <Route
-            path="/repair/:brandSlug-:serviceSlug-in-:locationSlug/"
-            element={<LocationBrandService />}
-          />
+          {/* Matches URLs like: /repair/haier-ac-repair-in-juhu/
+              React Router only supports dynamic params that span a whole path
+              segment, so the combined slug is captured in one param here and
+              split inside LocationBrandService. */}
+          <Route path="/repair/:pageSlug/" element={<LocationBrandService />} />
 
           {/* Fallback 404 Route */}
           <Route path="*" element={<NotFound />} />

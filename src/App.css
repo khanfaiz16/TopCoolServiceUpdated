@@ -624,10 +624,15 @@
 }
 
 .faq-a {
+  display: none;
   margin-top: 0.8rem;
   color: #475569;
   font-size: 0.95rem;
   line-height: 1.5;
+}
+
+.faq-a.is-open {
+  display: block;
 }
 
 /* Contact Page Layout */
@@ -965,5 +970,197 @@
 
   .feedback-form-card {
     position: static;
+  }
+}
+/* ==========================================================================
+   SEO landing page styles.
+   All classes below are new. Nothing here overrides an existing rule, so the
+   appearance of the original pages is unchanged.
+   ========================================================================== */
+
+.seo-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.9rem;
+  opacity: 0.85;
+}
+
+.seo-breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.seo-breadcrumb a:hover {
+  border-bottom-color: currentColor;
+}
+
+.seo-breadcrumb span[aria-hidden='true'] {
+  opacity: 0.5;
+}
+
+.disclosure-note {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  margin: 1.5rem 0 2rem 0;
+}
+
+.disclosure-note svg {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: #b45309;
+}
+
+.disclosure-note p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #78350f;
+}
+
+.problem-list {
+  gap: 1.3rem;
+}
+
+.problem-item {
+  align-items: flex-start;
+}
+
+.problem-item svg {
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.problem-item h3 {
+  font-size: 1.02rem;
+  margin: 0 0 0.3rem 0;
+  color: #0f172a;
+}
+
+.problem-item p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #475569;
+}
+
+.process-list {
+  margin: 1rem 0 2rem 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.process-list li h3 {
+  font-size: 1rem;
+  margin: 0 0 0.25rem 0;
+  color: #0f172a;
+}
+
+.process-list li p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #475569;
+}
+
+.coverage-areas-grid {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  margin: 1.2rem 0;
+}
+
+.coverage-footnote {
+  font-size: 0.95rem;
+  color: #475569;
+  margin-bottom: 2rem;
+}
+
+.seo-faq-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.2rem;
+}
+
+.seo-faq-item h3 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  color: #0f172a;
+}
+
+.seo-faq-item p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #475569;
+}
+
+/* Anchor styling for the brand pills that are now links. */
+a.brand-pill {
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+a.brand-pill:hover {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.brand-hub {
+  margin-top: 3.5rem;
+}
+
+.brand-hub-group {
+  margin-top: 1.6rem;
+}
+
+.brand-hub-group h3 {
+  font-size: 1.05rem;
+  margin-bottom: 0.2rem;
+  color: #0f172a;
+}
+
+.footer-brand-strip {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 1.6rem;
+  margin-bottom: 2rem;
+}
+
+.footer-brand-strip h4 {
+  margin-bottom: 0.8rem;
+}
+
+.footer-brand-links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-brand-links a {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+
+.footer-brand-links a:hover {
+  color: #38bdf8;
+}
+
+@media (max-width: 768px) {
+  .coverage-areas-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   }
 }
