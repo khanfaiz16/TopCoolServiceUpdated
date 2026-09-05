@@ -21,7 +21,8 @@ export const serviceAreas = [
   'Miraroad',
   'Colaba',
   'Juhu',
-  'Marine Lines'
+  'Marine Lines',
+  'Thane'
 ];
 
 export const allBrands = [
@@ -156,23 +157,51 @@ export const customerReviews = [
 
 export const faqsData = [
   {
-    q: 'How fast can an engineer arrive at my location?',
-    a: 'We offer doorstep repairs across Mumbai, Virar, and Dahisar within 60 to 90 minutes of your booking request.'
+    q: 'How quickly can an engineer reach my home?',
+    a: 'Our technicians typically arrive within 60 to 90 minutes of booking confirmation across all covered areas in Mumbai and Thane.'
   },
   {
-    q: 'Do you charge an inspection fee if work is completed?',
-    a: 'No. The nominal visit/inspection charge is waived if you approve and proceed with the service quotation.'
+    q: 'Do you provide on-site repair, or do you take the appliance away?',
+    a: 'Over 95% of our repairs—including gas refilling, motor/bearing changes, PCB replacements, and deep chemical cleaning—are completed directly at your doorstep. In rare cases requiring heavy machine shop equipment (such as drum welding), we arrange safe pick-up and drop-off.'
   },
   {
-    q: 'Are the replacement spare parts original?',
-    a: 'Yes, we use 100% genuine, brand-approved spare parts and provide a replacement warranty on all replaced components.'
+    q: 'What are your visit and inspection charges?',
+    a: 'We have a nominal inspection fee to cover the technician’s visit and diagnostic testing. However, this inspection fee is completely waived if you proceed with the suggested repair.'
   },
   {
-    q: 'Which brands of appliances do you repair?',
-    a: 'We service all leading brands including Samsung, LG, Whirlpool, Bosch, IFB, Godrej, Haier, Voltas, and Daikin.'
+    q: 'Are the spare parts original and covered under warranty?',
+    a: 'Yes, we use 100% genuine, brand-certified spare parts. All replaced components come with a 30 to 90-day warranty depending on the appliance and part type.'
   },
   {
-    q: 'What payment modes are accepted by the technician?',
-    a: 'You can pay using UPI (Google Pay, PhonePe, Paytm), Cash, or Bank Transfer once the repair is fully tested and verified.'
+    q: 'Which appliance brands do you service?',
+    a: 'We service all major brands including Samsung, LG, Whirlpool, Bosch, IFB, Haier, Godrej, Voltas, Daikin, Panasonic, Siemens, and Electrolux.'
+  },
+  {
+    q: 'How much does AC gas charging cost, and do you check for leaks?',
+    a: 'Before filling refrigerant gas, our technicians conduct a mandatory nitrogen pressure test to find and braze the leak. Once sealed and vacuumed, genuine refrigerant is refilled to manufacturer specifications.'
+  },
+  {
+    q: 'Why is my washing machine making loud noises or vibrating heavily?',
+    a: 'Excessive shaking and grinding noise during spin cycles usually indicate worn tub bearings, broken spider arms, or damaged shock absorbers/suspension springs. Our technicians can replace these on-site.'
+  },
+  {
+    q: 'Why is my refrigerator cooling the freezer but not the fridge section below?',
+    a: 'This is commonly caused by a faulty defrost timer, burnt defrost heater, broken bimetal thermostat, or a blocked air damper duct. We diagnose the exact electrical fault and fix it in a single visit.'
+  },
+  {
+    q: 'Can you repair microwave ovens that spark or do not heat?',
+    a: 'Yes. Lack of heating is usually caused by a blown high-voltage diode, capacitor, or faulty magnetron. Sparking is often due to a burnt mica wave-guide cover. Both issues can be resolved at your home safely.'
+  },
+  {
+    q: 'What areas do you cover across Mumbai and Thane?',
+    a: 'We cover Bandra, BKC, Kalina, Andheri, Santacruz, Vasai, Virar, Nallasopara, Powai, Dahisar, Mira Road, Colaba, Juhu, Marine Lines, and Thane.'
+  },
+  {
+    q: 'What payment methods do you accept?',
+    a: 'You can pay after the repair is completed and tested using UPI (Google Pay, PhonePe, Paytm), cash, or net banking.'
+  },
+  {
+    q: 'Are your technicians verified and experienced?',
+    a: 'Yes, all technicians undergo background verification, carry proper ID cards, and have a minimum of 5+ years of practical field experience.'
   }
 ];
