@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, Shield, Clock, Phone, MessageCircle } from 'lucide-react';
+import { CheckCircle, Shield, Clock, Phone, MessageCircle, ArrowLeft } from 'lucide-react';
 import SEO from '../components/SEO';
 import BookingForm from './BookingForm';
 import { allBrands, contactDetails } from '../data/siteData';
@@ -19,7 +19,9 @@ export default function ServicePage({ service }) {
 
       <section className="page-header">
         <div className="container">
-          <Link to="/services/" className="back-link">&larr; All Services</Link>
+          <Link to="/services/" className="back-link">
+            <ArrowLeft size={16} /> All Services
+          </Link>
           <h1>{service.title} in Mumbai</h1>
           <p>{service.shortDesc}</p>
         </div>
@@ -73,6 +75,7 @@ export default function ServicePage({ service }) {
                 <span key={brand} className="brand-pill">{brand}</span>
               ))}
             </div>
+
             <div className="quick-call-cta">
               <h3>Need Immediate Help?</h3>
               <p>Speak directly with our technical support team in Mumbai.</p>
