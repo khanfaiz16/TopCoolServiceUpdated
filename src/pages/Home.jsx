@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, MessageCircle, CheckCircle, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { Phone, MessageCircle, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
 import SEO from '../components/SEO';
 import Feedback from '../components/Feedback';
 import BookingForm from './BookingForm';
@@ -11,7 +11,7 @@ export default function Home() {
   const [openFaq, setOpenFaq] = useState(null);
 
   const toggleFaq = (idx) => {
-    setOpenFaq(openFaq === idx ? null : idx);
+    setOpenFaq((prev) => (prev === idx ? null : idx));
   };
 
   return (
@@ -110,15 +110,23 @@ export default function Home() {
           <h2 className="section-title">Frequently Asked Questions</h2>
           <p className="section-subtitle">Common queries regarding our doorstep service policies</p>
           <div className="faq-list">
-            {faqsData.map((f, i) => (
-              <div key={i} className="faq-item" onClick={() => toggleFaq(i)}>
-                <div className="faq-q">
-                  <h4>{f.q}</h4>
-                  <span>{openFaq === i ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
+            {faqsData.map((f, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <div
+                  key={i}
+                  className={`faq-item ${isOpen ? 'active open' : ''}`}
+                  onClick={() => toggleFaq(i)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="faq-q">
+                    <h4>{f.q}</h4>
+                    <span>{isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
+                  </div>
+                  {isOpen && <p className="faq-a">{f.a}</p>}
                 </div>
-                <p className={`faq-a${openFaq === i ? ' is-open' : ''}`}>{f.a}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
