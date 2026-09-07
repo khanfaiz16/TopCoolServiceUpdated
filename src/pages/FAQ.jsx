@@ -7,7 +7,7 @@ export default function FAQ() {
   const [openFaq, setOpenFaq] = useState(null);
 
   const toggleFaq = (idx) => {
-    setOpenFaq(openFaq === idx ? null : idx);
+    setOpenFaq((prev) => (prev === idx ? null : idx));
   };
 
   return (
@@ -26,15 +26,38 @@ export default function FAQ() {
 
       <section className="section container">
         <div className="faq-list">
-          {faqsData.map((f, i) => (
-            <div key={i} className="faq-item" onClick={() => toggleFaq(i)}>
-              <div className="faq-q">
-                <h4>{f.q}</h4>
-                <span>{openFaq === i ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
+          {faqsData.map((f, i) => {
+            const isOpen = openFaq === i;
+            return (
+              <div
+                key={i}
+                className={`faq-item ${isOpen ? 'active open' : ''}`}
+                onClick={() => toggleFaq(i)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="faq-q">
+                  <h4>{f.q}</h4>
+                  <span>{isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</span>
+                </div>
+
+                {isOpen && (
+                  <p
+                    className="faq-a"
+                    style={{
+                      display: 'block',
+                      visibility: 'visible',
+                      opacity: 1,
+                      marginTop: '0.75rem',
+                      lineHeight: '1.6',
+                      color: '#334155'
+                    }}
+                  >
+                    {f.a}
+                  </p>
+                )}
               </div>
-              {openFaq === i && <p className="faq-a">{f.a}</p>}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="text-center call-banner" style={{ marginTop: '3.5rem' }}>

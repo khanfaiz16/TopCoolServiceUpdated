@@ -597,9 +597,17 @@
   color: #64748b;
 }
 
-/* FAQs */
+/* =========================================
+   FAQ Section & Accordion Styles
+========================================= */
+
+.faq-page {
+  padding-bottom: 4rem;
+}
+
 .faqs-section {
   background: #f8fafc;
+  padding: 4rem 0;
 }
 
 .faq-list {
@@ -613,34 +621,103 @@
 .faq-item {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1.2rem;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  user-select: none;
 }
 
 .faq-item:hover {
-  border-color: #cbd5e1;
+  border-color: #0284c7;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
+}
+
+.faq-item.active,
+.faq-item.open {
+  border-color: #0284c7;
+  background-color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.1);
 }
 
 .faq-q {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+}
+
+.faq-q h4 {
+  font-size: 1.05rem;
   font-weight: 600;
   color: #0f172a;
+  margin: 0;
+  line-height: 1.4;
 }
 
+.faq-q span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0284c7;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+/* 
+  Ensures the answer is visible whenever mounted by React.
+  Supports both simple conditional rendering and .is-open / .active classes.
+*/
 .faq-a {
-  display: none;
-  margin-top: 0.8rem;
+  display: block;
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid #f1f5f9;
   color: #475569;
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 0.96rem;
+  line-height: 1.65;
 }
 
-.faq-a.is-open {
-  display: block;
+/* Call Banner at Bottom */
+.call-banner {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 2.5rem 1.5rem;
+  max-width: 800px;
+  margin: 3.5rem auto 0 auto;
+}
+
+.call-banner h3 {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.call-banner p {
+  color: #64748b;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .faq-item {
+    padding: 1rem 1.1rem;
+  }
+
+  .faq-q h4 {
+    font-size: 0.98rem;
+  }
+
+  .faq-a {
+    font-size: 0.9rem;
+  }
+
+  .call-banner {
+    padding: 2rem 1rem;
+  }
 }
 
 /* Contact Page Layout */
