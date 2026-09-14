@@ -8,7 +8,7 @@ export const siteConfig = {
   // Canonical host. The apex domain 308-redirects to www in production, so www
   // is the canonical form: canonicals, OG/Twitter URLs, JSON-LD and the sitemap
   // must all point at it, never at a URL that redirects.
-  siteUrl: 'https://www.topcoolservice.com',
+  siteUrl: 'https://topcoolservice.com',
   siteName: 'Top Cool Service',
   titleSuffix: 'Top Cool Service',
   locale: 'en_IN',
@@ -122,13 +122,23 @@ export const staticPageMeta = {
 
 /**
  * Returns the SEO props for a static page path, without the sitemap-only
- * fields. Pages call this instead of hard-coding their own strings, so the
- * metadata rendered by React and the metadata baked in at build time are
- * guaranteed to be identical.
+ * fields. Automatically normalizes leading/trailing slashes so routes match
+ * regardless of routing quirks.
  */
-export function getPageMeta(path) {
-  const meta = staticPageMeta[path];
-  if (!meta) return {};
+export function getPageMeta(path = '/') {
+  // Normalize path to ensure leading and trailing slashes match staticPageMeta keys
+  let normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  if (!normalizedPath.endsWith('/')) {
+    normalizedPath = `${normalizedPath}/`;
+  }
+
+  const meta = staticPageMeta[normalizedPath] || staticPageMeta['/'];
   const { title, description, keywords } = meta;
-  return { title, description, keywords, canonicalPath: path };
+
+  return {
+    title,
+    description,
+    keywords,
+    canonicalPath: normalizedPath,
+  };
 }

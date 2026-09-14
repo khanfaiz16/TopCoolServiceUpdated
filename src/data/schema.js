@@ -1,97 +1,83 @@
-// JSON-LD builders.
-//
-// Kept as plain JavaScript (no JSX) on purpose: the React pages import these at
-// runtime and scripts/prerender-seo.mjs imports the very same functions at build
-// time, so the structured data served to a crawler that does not run JavaScript
-// is identical to what the app renders.
-//
-// Nothing here may contain data the business has not actually supplied. In
-// particular: no aggregateRating, no review markup, no opening hours or prices
-// beyond what the site already states, and no claim of brand authorisation.
+import { contactDetails, servicesList, serviceAreas } from './siteData';
 
-import { contactDetails, serviceAreas } from './siteData.js';
-import { siteConfig, absoluteUrl } from './seoConfig.js';
+const BASE_URL = 'https://topcoolservice.com';
 
-/** The business itself, reused as the `provider` of every Service node. */
-export function localBusinessSchema() {
-  return {
+// Organization & Local Business Schema
+export const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  '@id': `${BASE_URL}/#organization`,
+  name: 'Top Cool Service',
+  url: BASE_URL,
+  logo: `${BASE_URL}/assets/logo.png`,
+  image: `${BASE_URL}/assets/hero-bg.jpg`,
+  description: "Mumbai's trusted doorstep home appliance repair specialists for AC, Refrigerator, Washing Machine, Microwave, and more.",
+  telephone: contactDetails.phoneRaw,
+  email: contactDetails.email,
+  priceRange: '₹₹',
+  paymentAccepted: ['Cash', 'Credit Card', 'UPI', 'Net Banking'],
+  currenciesAccepted: 'INR',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: contactDetails.address,
+    addressLocality: 'Mumbai',
+    addressRegion: 'Maharashtra',
+    postalCode: '400068',
+    addressCountry: 'IN'
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 19.2493,
+    longitude: 72.8596
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '08:00',
+      closes: '22:00'
+    }
+  ],
+  areaServed: serviceAreas.map((area) => ({
+    '@type': 'AdministrativeArea',
+    name: `${area}, Mumbai`
+  })),
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Appliance Repair Services',
+    itemListElement: servicesList.map((srv) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: srv.title,
+        description: srv.shortDesc,
+        url: `${BASE_URL}/${srv.slug}/`
+      }
+    }))
+  }
+};
+
+// Appliance Specific Service Schema
+export const applianceServiceSchema = (service) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: service.title,
+  provider: {
     '@type': 'LocalBusiness',
-    '@id': `${siteConfig.siteUrl}/#business`,
-    name: siteConfig.siteName,
+    name: 'Top Cool Service',
     telephone: contactDetails.phoneRaw,
-    email: contactDetails.email,
-    url: siteConfig.siteUrl,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Dahisar',
-      addressLocality: 'Mumbai',
-      addressRegion: 'Maharashtra',
-      addressCountry: 'IN',
-    },
-    areaServed: serviceAreas.map((area) => ({ '@type': 'Place', name: `${area}, Mumbai` })),
-    openingHours: 'Mo-Su 08:00-22:00',
-    priceRange: '₹₹',
-  };
-}
-
-function breadcrumb(items) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      item: absoluteUrl(item.path),
-    })),
-  };
-}
-
-/** Structured data for a generic appliance page, e.g. /dishwasher-repair/. */
-export function applianceServiceSchema(service) {
-  const path = `/${service.slug}/`;
-  const url = absoluteUrl(path);
-
-  return [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Service',
-      '@id': `${url}#service`,
-      name: `${service.title} in Mumbai`,
-      serviceType: service.title,
-      description: service.shortDesc,
-      url,
-      provider: localBusinessSchema(),
-      areaServed: serviceAreas.map((area) => ({ '@type': 'Place', name: `${area}, Mumbai` })),
-    },
-    breadcrumb([
-      { name: 'Home', path: '/' },
-      { name: 'Services', path: '/services/' },
-      { name: service.title, path },
-    ]),
-  ];
-}
-
-/** Structured data for the site-wide FAQ page. */
-export function faqPageSchema(faqs) {
-  return [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: faqs.map((faq) => ({
-        '@type': 'Question',
-        name: faq.q,
-        acceptedAnswer: { '@type': 'Answer', text: faq.a },
-      })),
-    },
-    breadcrumb([
-      { name: 'Home', path: '/' },
-      { name: 'FAQ', path: '/faq/' },
-    ]),
-  ];
-}
-
-/** Default structured data used by any page that does not supply its own. */
-export function defaultSchema() {
-  return { '@context': 'https://schema.org', ...localBusinessSchema() };
-}
+    url: BASE_URL
+  },
+  areaServed: {
+    '@type': 'City',
+    name: 'Mumbai'
+  },
+  description: service.shortDesc,
+  offers: {
+    '@type': 'Offer',
+    price: '299',
+    priceCurrency: 'INR',
+    availability: 'https://schema.org/InStock',
+    url: `${BASE_URL}/${service.slug}/`
+  }
+});

@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+# Sitemaps
 Sitemap: https://topcoolservice.com/sitemap.xml

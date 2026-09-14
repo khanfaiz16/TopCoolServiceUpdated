@@ -2,11 +2,6 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { siteConfig, absoluteUrl } from '../data/seoConfig';
 
-// Meta tags this component owns. Anything listed here is either updated with
-// the current page's value or removed outright, so a page that does not supply
-// (say) keywords can never inherit the previous page's keywords. The tags that
-// ship statically in index.html are adopted by the same mechanism rather than
-// being duplicated.
 const MANAGED_NAME_TAGS = [
   'description',
   'keywords',
@@ -76,20 +71,16 @@ const DEFAULT_SCHEMA = {
 };
 
 /**
- * Injects per-page metadata into <head>.
+ * Injects per-page metadata and JSON-LD schema into document.head.
  *
- * Existing callers that pass only title/description/keywords/schemaData keep
- * working unchanged; canonical, Open Graph and Twitter tags are then derived
- * automatically from those values and the current route.
- *
- * @param {string}  title          Page title, without the site-name suffix.
+ * @param {string}  title          Page title (excluding the site suffix).
  * @param {string}  description    Meta description.
- * @param {string}  keywords       Optional comma-separated keywords.
- * @param {object|object[]} schemaData  One or more JSON-LD objects.
- * @param {string}  canonicalPath  Overrides the canonical path (defaults to the current route).
- * @param {string}  image          Site-relative or absolute social share image.
- * @param {string}  ogType         Open Graph type, defaults to "website".
- * @param {string}  robots         Robots directive, e.g. "noindex, follow".
+ * @param {string}  keywords       Comma-separated SEO keywords.
+ * @param {object|object[]} schemaData JSON-LD structured data object(s).
+ * @param {string}  canonicalPath  Custom canonical route override.
+ * @param {string}  image          Relative or absolute share banner image URL.
+ * @param {string}  ogType         Open Graph type (default: "website").
+ * @param {string}  robots         Robots indexing directives.
  */
 export default function SEO({
   title,
@@ -99,7 +90,7 @@ export default function SEO({
   canonicalPath,
   image,
   ogType = 'website',
-  robots,
+  robots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
 }) {
   const { pathname } = useLocation();
 
@@ -114,7 +105,7 @@ export default function SEO({
       description,
       keywords,
       robots,
-      'twitter:card': siteConfig.twitterCard,
+      'twitter:card': siteConfig.twitterCard || 'summary_large_image',
       'twitter:title': fullTitle,
       'twitter:description': description,
       'twitter:image': shareImage,
@@ -127,15 +118,14 @@ export default function SEO({
       'og:url': canonical,
       'og:image': shareImage,
       'og:site_name': siteConfig.siteName,
-      'og:locale': siteConfig.locale,
+      'og:locale': siteConfig.locale || 'en_IN',
     };
 
     MANAGED_NAME_TAGS.forEach((key) => upsertMeta('name', key, values[key]));
     MANAGED_PROPERTY_TAGS.forEach((key) => upsertMeta('property', key, properties[key]));
     upsertCanonical(canonical);
 
-    // JSON-LD. Every block we add is tagged so the previous page's structured
-    // data is cleared before the current page's is written.
+    // Remove previously injected JSON-LD schema blocks before adding new ones
     document.head
       .querySelectorAll('script[data-seo-schema]')
       .forEach((node) => node.remove());
