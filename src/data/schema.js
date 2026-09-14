@@ -1,17 +1,18 @@
-import { contactDetails, servicesList, serviceAreas } from "./siteData.js";
+import { contactDetails, servicesList, serviceAreas, faqsData } from './siteData.js';
 
 const BASE_URL = 'https://topcoolservice.com';
 
-// Organization & Local Business Schema
-export const localBusinessSchema = {
+// 1. Default Organization / LocalBusiness Schema
+export const defaultSchema = {
   '@context': 'https://schema.org',
   '@type': 'HomeAndConstructionBusiness',
   '@id': `${BASE_URL}/#organization`,
   name: 'Top Cool Service',
   url: BASE_URL,
-  logo: `${BASE_URL}/assets/logo.png`,
-  image: `${BASE_URL}/assets/hero-bg.jpg`,
-  description: "Mumbai's trusted doorstep home appliance repair specialists for AC, Refrigerator, Washing Machine, Microwave, and more.",
+  logo: `${BASE_URL}/images/ac.jpg`,
+  image: `${BASE_URL}/images/ac.jpg`,
+  description:
+    "Mumbai's trusted doorstep home appliance repair specialists for AC, Refrigerator, Washing Machine, Microwave, Dryer, and Dishwasher.",
   telephone: contactDetails.phoneRaw,
   email: contactDetails.email,
   priceRange: '₹₹',
@@ -23,61 +24,86 @@ export const localBusinessSchema = {
     addressLocality: 'Mumbai',
     addressRegion: 'Maharashtra',
     postalCode: '400068',
-    addressCountry: 'IN'
+    addressCountry: 'IN',
   },
   geo: {
     '@type': 'GeoCoordinates',
     latitude: 19.2493,
-    longitude: 72.8596
+    longitude: 72.8596,
   },
   openingHoursSpecification: [
     {
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      dayOfWeek: [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ],
       opens: '08:00',
-      closes: '22:00'
-    }
+      closes: '22:00',
+    },
   ],
-  areaServed: serviceAreas.map((area) => ({
+  areaServed: (serviceAreas || []).map((area) => ({
     '@type': 'AdministrativeArea',
-    name: `${area}, Mumbai`
+    name: `${area}, Mumbai`,
   })),
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Appliance Repair Services',
-    itemListElement: servicesList.map((srv) => ({
+    itemListElement: (servicesList || []).map((srv) => ({
       '@type': 'Offer',
       itemOffered: {
         '@type': 'Service',
         name: srv.title,
         description: srv.shortDesc,
-        url: `${BASE_URL}/${srv.slug}/`
-      }
-    }))
-  }
+        url: `${BASE_URL}/${srv.slug}/`,
+      },
+    })),
+  },
 };
 
-// Appliance Specific Service Schema
+// Alias export for backward compatibility
+export const localBusinessSchema = defaultSchema;
+
+// 2. Individual Appliance Service Schema
 export const applianceServiceSchema = (service) => ({
   '@context': 'https://schema.org',
   '@type': 'Service',
-  serviceType: service.title,
+  serviceType: service?.title || 'Appliance Repair',
   provider: {
     '@type': 'LocalBusiness',
     name: 'Top Cool Service',
     telephone: contactDetails.phoneRaw,
-    url: BASE_URL
+    url: BASE_URL,
   },
   areaServed: {
     '@type': 'City',
-    name: 'Mumbai'
+    name: 'Mumbai',
   },
-  description: service.shortDesc,
+  description: service?.shortDesc || 'Doorstep repair and servicing in Mumbai',
   offers: {
     '@type': 'Offer',
     price: '299',
     priceCurrency: 'INR',
     availability: 'https://schema.org/InStock',
-    url: `${BASE_URL}/${service.slug}/`
-  }
+    url: `${BASE_URL}/${service?.slug || ''}/`,
+  },
 });
+
+// 3. FAQ Page Schema (Required by prerender script)
+export const faqPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: (faqsData || []).map((faq) => ({
+    '@type': 'Question',
+    name: faq.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.a,
+    },
+  })),
+};
