@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { siteConfig, absoluteUrl } from '../data/seoConfig';
+import { siteConfig, absoluteUrl } from '../data/seoConfig.js';
 
 const MANAGED_NAME_TAGS = [
   'description',
