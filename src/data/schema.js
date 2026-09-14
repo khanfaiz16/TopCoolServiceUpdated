@@ -1,109 +1,119 @@
-import { contactDetails, servicesList, serviceAreas, faqsData } from './data/siteData.js';
+import { contactDetails, servicesList, serviceAreas, faqsData } from './siteData.js';
 
 const BASE_URL = 'https://topcoolservice.com';
 
-// 1. Default Organization / LocalBusiness Schema
-export const defaultSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HomeAndConstructionBusiness',
-  '@id': `${BASE_URL}/#organization`,
-  name: 'Top Cool Service',
-  url: BASE_URL,
-  logo: `${BASE_URL}/images/ac.jpg`,
-  image: `${BASE_URL}/images/ac.jpg`,
-  description:
-    "Mumbai's trusted doorstep home appliance repair specialists for AC, Refrigerator, Washing Machine, Microwave, Dryer, and Dishwasher.",
-  telephone: contactDetails.phoneRaw,
-  email: contactDetails.email,
-  priceRange: '₹₹',
-  paymentAccepted: ['Cash', 'Credit Card', 'UPI', 'Net Banking'],
-  currenciesAccepted: 'INR',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: contactDetails.address,
-    addressLocality: 'Mumbai',
-    addressRegion: 'Maharashtra',
-    postalCode: '400068',
-    addressCountry: 'IN',
-  },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude: 19.2493,
-    longitude: 72.8596,
-  },
-  openingHoursSpecification: [
-    {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-      ],
-      opens: '08:00',
-      closes: '22:00',
+// 1. Default Organization / LocalBusiness Schema Function
+export function defaultSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HomeAndConstructionBusiness',
+    '@id': `${BASE_URL}/#organization`,
+    name: 'Top Cool Service',
+    url: BASE_URL,
+    logo: `${BASE_URL}/images/ac.jpg`,
+    image: `${BASE_URL}/images/ac.jpg`,
+    description:
+      "Mumbai's trusted doorstep home appliance repair specialists for AC, Refrigerator, Washing Machine, Microwave, Dryer, and Dishwasher.",
+    telephone: contactDetails.phoneRaw,
+    email: contactDetails.email,
+    priceRange: '₹₹',
+    paymentAccepted: ['Cash', 'Credit Card', 'UPI', 'Net Banking'],
+    currenciesAccepted: 'INR',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: contactDetails.address,
+      addressLocality: 'Mumbai',
+      addressRegion: 'Maharashtra',
+      postalCode: '400068',
+      addressCountry: 'IN',
     },
-  ],
-  areaServed: (serviceAreas || []).map((area) => ({
-    '@type': 'AdministrativeArea',
-    name: `${area}, Mumbai`,
-  })),
-  hasOfferCatalog: {
-    '@type': 'OfferCatalog',
-    name: 'Appliance Repair Services',
-    itemListElement: (servicesList || []).map((srv) => ({
-      '@type': 'Offer',
-      itemOffered: {
-        '@type': 'Service',
-        name: srv.title,
-        description: srv.shortDesc,
-        url: `${BASE_URL}/${srv.slug}/`,
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 19.2493,
+      longitude: 72.8596,
+    },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ],
+        opens: '08:00',
+        closes: '22:00',
       },
+    ],
+    areaServed: (serviceAreas || []).map((area) => ({
+      '@type': 'AdministrativeArea',
+      name: `${area}, Mumbai`,
     })),
-  },
-};
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Appliance Repair Services',
+      itemListElement: (servicesList || []).map((srv) => ({
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: srv.title,
+          description: srv.shortDesc,
+          url: `${BASE_URL}/${srv.slug}/`,
+        },
+      })),
+    },
+  };
+}
 
-// Alias export for backward compatibility
+// Alias for any runtime components expecting an object or function
 export const localBusinessSchema = defaultSchema;
 
-// 2. Individual Appliance Service Schema
-export const applianceServiceSchema = (service) => ({
-  '@context': 'https://schema.org',
-  '@type': 'Service',
-  serviceType: service?.title || 'Appliance Repair',
-  provider: {
-    '@type': 'LocalBusiness',
-    name: 'Top Cool Service',
-    telephone: contactDetails.phoneRaw,
-    url: BASE_URL,
-  },
-  areaServed: {
-    '@type': 'City',
-    name: 'Mumbai',
-  },
-  description: service?.shortDesc || 'Doorstep repair and servicing in Mumbai',
-  offers: {
-    '@type': 'Offer',
-    price: '299',
-    priceCurrency: 'INR',
-    availability: 'https://schema.org/InStock',
-    url: `${BASE_URL}/${service?.slug || ''}/`,
-  },
-});
-
-// 3. FAQ Page Schema (Required by prerender script)
-export const faqPageSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: (faqsData || []).map((faq) => ({
-    '@type': 'Question',
-    name: faq.q,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: faq.a,
+// 2. Individual Appliance Service Schema Function (returns an array for schemaFor iteration)
+export function applianceServiceSchema(service) {
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      serviceType: service?.title || 'Appliance Repair',
+      provider: {
+        '@type': 'LocalBusiness',
+        name: 'Top Cool Service',
+        telephone: contactDetails.phoneRaw,
+        url: BASE_URL,
+      },
+      areaServed: {
+        '@type': 'City',
+        name: 'Mumbai',
+      },
+      description: service?.shortDesc || 'Doorstep repair and servicing in Mumbai',
+      offers: {
+        '@type': 'Offer',
+        price: '299',
+        priceCurrency: 'INR',
+        availability: 'https://schema.org/InStock',
+        url: `${BASE_URL}/${service?.slug || ''}/`,
+      },
     },
-  })),
-};
+  ];
+}
+
+// 3. FAQ Page Schema Function (returns an array for schemaFor iteration)
+export function faqPageSchema(faqs = faqsData) {
+  return [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: (faqs || []).map((faq) => ({
+        '@type': 'Question',
+        name: faq.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.a,
+        },
+      })),
+    },
+  ];
+}

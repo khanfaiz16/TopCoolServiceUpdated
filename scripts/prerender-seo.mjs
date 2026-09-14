@@ -27,9 +27,10 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { siteConfig, staticPageMeta, absoluteUrl } from './data/seoConfig.js';
-import { servicesList, faqsData } from './data/siteData.js';
-import { applianceServiceSchema, faqPageSchema, defaultSchema } from './data/schema.js';
+// Fixed relative paths: scripts/ -> ../src/data/
+import { siteConfig, staticPageMeta, absoluteUrl } from '../src/data/seoConfig.js';
+import { servicesList, faqsData } from '../src/data/siteData.js';
+import { applianceServiceSchema, faqPageSchema, defaultSchema } from '../src/data/schema.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
@@ -51,8 +52,9 @@ function schemaFor(path) {
   const service = servicesList.find((s) => `/${s.slug}/` === path);
   if (service) return applianceServiceSchema(service);
 
-
-  return [defaultSchema()];
+  // defaultSchema() returns a schema object, wrapped here as an array for the loop
+  const def = typeof defaultSchema === 'function' ? defaultSchema() : defaultSchema;
+  return Array.isArray(def) ? def : [def];
 }
 
 /** Every route that should be prerendered and listed in the sitemap. */
