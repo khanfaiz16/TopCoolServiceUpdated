@@ -27,9 +27,9 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { siteConfig, staticPageMeta, absoluteUrl } from '../src/data/seoConfig.js';
-import { servicesList, faqsData } from '../src/data/siteData.js';
-import { applianceServiceSchema, faqPageSchema, defaultSchema } from '../src/data/schema.js';
+import { siteConfig, staticPageMeta, absoluteUrl } from './data/seoConfig.js';
+import { servicesList, faqsData } from './data/siteData.js';
+import { applianceServiceSchema, faqPageSchema, defaultSchema } from './data/schema.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
