@@ -1,4 +1,4 @@
-import { contactDetails, servicesList, serviceAreas } from './siteData';
+import { contactDetails, servicesList, serviceAreas } from './siteData,js';
 
 const BASE_URL = 'https://topcoolservice.com';
 
