@@ -1,7 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Clock, Wrench, Sparkles } from 'lucide-react';
-import { contactDetails, servicesList } from '../data/siteData';
+import { MapPin, Phone, Mail, Clock, Wrench, Sparkles, ShieldCheck } from 'lucide-react';
+import { contactDetails, servicesList, serviceAreas } from '../data/siteData';
+
+const popularLocalSearches = [
+  { label: 'Bosch AC Repair in Kalina', path: '/repair/bosch-ac-repair-in-kalina/' },
+  { label: 'Voltas AC Service in Bandra', path: '/repair/voltas-ac-repair-in-bandra/' },
+  { label: 'Daikin AC Repair in Andheri', path: '/repair/daikin-ac-repair-in-andheri/' },
+  { label: 'Samsung Refrigerator Repair in BKC', path: '/repair/samsung-refrigerator-repair-in-bkc/' },
+  { label: 'Whirlpool Fridge Service in Powai', path: '/repair/whirlpool-refrigerator-repair-in-powai/' },
+  { label: 'LG Washing Machine Repair in Juhu', path: '/repair/lg-washing-machine-repair-in-juhu/' },
+  { label: 'Bosch Washing Machine Repair in Dahisar', path: '/repair/bosch-washing-machine-repair-in-dahisar/' },
+  { label: 'IFB Front Load Repair in Santacruz', path: '/repair/ifb-washing-machine-repair-in-santacruz/' },
+  { label: 'Siemens Dishwasher Repair in Marine Lines', path: '/repair/siemens-dishwasher-repair-in-marine-lines/' },
+  { label: 'Panasonic Microwave Repair in Colaba', path: '/repair/panasonic-microwave-repair-in-colaba/' },
+  { label: 'Haier Refrigerator Service in Mira Road', path: '/repair/haier-refrigerator-repair-in-miraroad/' },
+  { label: 'Godrej AC Service in Thane', path: '/repair/godrej-ac-repair-in-thane/' },
+];
 
 export default function Footer() {
   return (
@@ -64,13 +79,33 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* Programmatic Hyper-Local Search Discovery Grid */}
+      <div className="container footer-seo-section" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
+        <h5 style={{ color: '#94a3b8', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.8rem' }}>
+          Popular Doorstep Appliance Repair Locations
+        </h5>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px' }}>
+          {popularLocalSearches.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              style={{ color: '#64748b', fontSize: '0.8rem', textDecoration: 'none' }}
+              onMouseOver={(e) => (e.target.style.color = '#38bdf8')}
+              onMouseOut={(e) => (e.target.style.color = '#64748b')}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       <div className="footer-bottom">
         <div className="container footer-bottom-content">
           <p className="copyright-text">
             &copy; {new Date().getFullYear()} Top Cool Service. All Rights Reserved. Mumbai, Maharashtra.
           </p>
 
-          {/* Premium Developer Badge */}
+          {/* Developer Badge */}
           <div className="dev-badge">
             <div className="dev-meta">
               <Sparkles size={14} className="sparkle-icon" />
@@ -83,7 +118,6 @@ export default function Footer() {
                 +91 73855 40220
               </a>
 
-              {/* LinkedIn */}
               <a
                 href="https://www.linkedin.com/in/mohd-faiz-khan-085555319/"
                 target="_blank"
@@ -97,7 +131,6 @@ export default function Footer() {
                 </svg>
               </a>
 
-              {/* WhatsApp */}
               <a
                 href="https://wa.me/917385540220?text=Hi%20Khan%20Faiz,%20I%20saw%20your%20work%20on%20Top%20Cool%20Service."
                 target="_blank"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { CheckCircle, Shield, Clock, MapPin, Phone, MessageCircle } from 'lucide-react';
+import { CheckCircle, Shield, Clock, MapPin, Phone, MessageCircle, Wrench, Award } from 'lucide-react';
 import SEO from '../components/SEO';
 import BookingForm from './BookingForm';
 import { servicesList, serviceAreas, allBrands, contactDetails } from '../data/siteData';
@@ -8,11 +8,6 @@ import { servicesList, serviceAreas, allBrands, contactDetails } from '../data/s
 export default function LocationBrandService() {
   const { pageSlug } = useParams();
 
-  // The route captures the whole slug in one param, because React Router only
-  // supports dynamic params that span a complete path segment. Rebuild the
-  // three parts here: "<brand>-<service>-in-<location>", e.g.
-  // "bosch-dishwasher-repair-in-marine-lines". We split on the LAST "-in-" so
-  // multi-word localities keep their hyphens.
   const slug = pageSlug || '';
   const separatorIndex = slug.lastIndexOf('-in-');
   const brandAndService = separatorIndex > -1 ? slug.slice(0, separatorIndex) : slug;
@@ -21,10 +16,6 @@ export default function LocationBrandService() {
   const brandSlug = firstDash > -1 ? brandAndService.slice(0, firstDash) : brandAndService;
   const serviceSlug = firstDash > -1 ? brandAndService.slice(firstDash + 1) : '';
 
-  // Normalize inputs. Slugs are hyphenated while the source data is not, so
-  // compare on a form where hyphens and spaces are equivalent ("marine-lines"
-  // has to match "Marine Lines"). Anything we cannot match falls back to a
-  // title-cased version of the slug rather than the raw slug.
   const normalize = (value) => (value || '').toLowerCase().replace(/[\s-]+/g, ' ').trim();
   const titleCase = (value) =>
     normalize(value).replace(/\b\w/g, (character) => character.toUpperCase());
@@ -35,47 +26,91 @@ export default function LocationBrandService() {
   const matchedLocation =
     serviceAreas.find((loc) => normalize(loc) === normalize(locationSlug)) || titleCase(locationSlug);
 
-  const pageTitle = `${matchedBrand} ${service.title} in ${matchedLocation}`;
-  const metaDescription = `Looking for certified ${matchedBrand} ${service.title.toLowerCase()} in ${matchedLocation}, Mumbai? 90-min doorstep arrival, 100% genuine spares, and repair warranty.`;
+  const pageTitle = `${matchedBrand} ${service.title} in ${matchedLocation}, Mumbai | Top Cool Service`;
+  const metaDescription = `Need expert ${matchedBrand} ${service.title.toLowerCase()} in ${matchedLocation}? Doorstep technician in 60-90 mins, genuine ${matchedBrand} spare parts, upfront pricing & warranty.`;
 
-  // LocalBusiness + Service JSON-LD Schema
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@type": "HomeAndConstructionBusiness",
-    "name": `Top Cool Service - ${pageTitle}`,
-    "image": service.image,
-    "telephone": contactDetails.phone,
-    "email": contactDetails.email,
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Dahisar",
-      "addressLocality": "Mumbai",
-      "addressRegion": "Maharashtra",
-      "addressCountry": "IN"
+  // Localized Schema.org Structured Data
+  const schemaData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "HomeAndConstructionBusiness",
+      "@id": `https://topcoolservice.com/#organization`,
+      "name": "Top Cool Service",
+      "telephone": contactDetails.phoneRaw,
+      "email": contactDetails.email,
+      "priceRange": "₹₹",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": contactDetails.address,
+        "addressLocality": "Mumbai",
+        "addressRegion": "Maharashtra",
+        "postalCode": "400068",
+        "addressCountry": "IN"
+      },
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": `${matchedLocation}, Mumbai`
+      }
     },
-    "areaServed": {
-      "@type": "AdministrativeArea",
-      "name": matchedLocation
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": `${matchedBrand} ${service.title} in ${matchedLocation}`,
+      "serviceType": `${matchedBrand} ${service.title}`,
+      "provider": {
+        "@type": "HomeAndConstructionBusiness",
+        "name": "Top Cool Service",
+        "telephone": contactDetails.phoneRaw
+      },
+      "areaServed": {
+        "@type": "AdministrativeArea",
+        "name": `${matchedLocation}, Mumbai`
+      },
+      "brand": {
+        "@type": "Brand",
+        "name": matchedBrand
+      },
+      "description": metaDescription,
+      "offers": {
+        "@type": "Offer",
+        "price": "299",
+        "priceCurrency": "INR",
+        "availability": "https://schema.org/InStock",
+        "url": `https://topcoolservice.com/repair/${slug}/`
+      }
     },
-    "priceRange": "₹₹",
-    "description": metaDescription,
-    "openingHours": "Mo-Su 08:00-22:00"
-  };
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": `How soon can a technician arrive in ${matchedLocation} for ${matchedBrand} repair?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `Our localized mobile service team is active across ${matchedLocation}, reaching your doorstep within 60 to 90 minutes of booking confirmation.`
+          }
+        },
+        {
+          "@type": "Question",
+          "name": `Do you use original ${matchedBrand} spare parts?`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `Yes, all replacement components used for ${matchedBrand} appliances are 100% genuine, certified, and covered under our 30 to 90-day service warranty.`
+          }
+        }
+      ]
+    }
+  ];
 
   return (
     <div className="service-detail-view">
-      {/* These brand x service x locality combinations are generated
-          automatically, so there are well over a thousand of them and they are
-          necessarily thin and near-identical. They still work for anyone who
-          arrives directly, but they are marked noindex/follow so that a
-          thousand near-duplicate pages are not offered to search engines.
-          Links on them are still followed, so they pass link equity on to the
-          real pages. */}
       <SEO
         title={pageTitle}
         description={metaDescription}
-        keywords={`${matchedBrand} ${service.slug} ${matchedLocation}, ${matchedBrand} appliance service ${matchedLocation}, doorstep repair Mumbai`}
-        robots="noindex, follow"
+        keywords={`${matchedBrand} ${service.slug} ${matchedLocation}, ${matchedBrand} repair in ${matchedLocation}, doorstep ${matchedBrand} service Mumbai`}
+        robots="index, follow"
+        canonical={`https://topcoolservice.com/repair/${slug}/`}
         image={service.image}
         schemaData={schemaData}
       />
@@ -83,9 +118,9 @@ export default function LocationBrandService() {
       <section className="page-header">
         <div className="container">
           <Link to="/" className="back-link">&larr; Home</Link>
-          <h1>{pageTitle}</h1>
+          <h1>{matchedBrand} {service.title} in {matchedLocation}, Mumbai</h1>
           <p>
-            Same-day, doorstep diagnosis and repair for all {matchedBrand} models across {matchedLocation}, Mumbai.
+            Certified doorstep repair, genuine {matchedBrand} components, and same-day turnaround in {matchedLocation}.
           </p>
         </div>
       </section>
@@ -94,15 +129,19 @@ export default function LocationBrandService() {
         <div className="detail-layout">
           <div className="detail-info">
             <div className="detail-img-box">
-              <img src={service.image} alt={`${matchedBrand} ${service.title} in ${matchedLocation}`} className="detail-banner" />
+              <img
+                src={service.image}
+                alt={`${matchedBrand} ${service.title} in ${matchedLocation}`}
+                className="detail-banner"
+              />
             </div>
 
             <h2>Doorstep {matchedBrand} Specialist in {matchedLocation}</h2>
             <p className="lead-text">
-              Experiencing issues with your {matchedBrand} appliance in {matchedLocation}? Our localized service vans are stationed nearby, allowing technicians to reach your location in under 90 minutes with authentic {matchedBrand} replacement spares.
+              Looking for reliable {matchedBrand} {service.title.toLowerCase()} near {matchedLocation}? Top Cool Service provides fast, factory-grade repairs directly at your home. Our vans carry genuine {matchedBrand} diagnostic tools and factory parts to ensure your appliance is restored on the very first visit.
             </p>
 
-            <h3>Common {matchedBrand} Issues We Resolve:</h3>
+            <h3>Common {matchedBrand} {service.title} Problems We Fix:</h3>
             <ul className="feature-list">
               {service.issues.map((issue, idx) => (
                 <li key={idx}>
@@ -115,13 +154,45 @@ export default function LocationBrandService() {
             <div className="service-perks-grid">
               <div className="perk-box">
                 <Clock size={24} color="#0284c7" />
-                <h4>Express {matchedLocation} Dispatch</h4>
-                <p>Localized engineers available within 60–90 minutes.</p>
+                <h4>60-90 Min Arrival in {matchedLocation}</h4>
+                <p>Fast dispatch throughout {matchedLocation} and adjacent suburbs.</p>
               </div>
               <div className="perk-box">
                 <Shield size={24} color="#0284c7" />
-                <h4>Genuine {matchedBrand} Parts</h4>
-                <p>Authentic spares backed by a 30 to 90-day warranty.</p>
+                <h4>Authentic {matchedBrand} Parts</h4>
+                <p>Genuine factory spares backed by a 30 to 90-day replacement warranty.</p>
+              </div>
+              <div className="perk-box">
+                <Wrench size={24} color="#0284c7" />
+                <h4>Diagnostic Guarantee</h4>
+                <p>Inspection charge waived if you proceed with our repair estimate.</p>
+              </div>
+              <div className="perk-box">
+                <Award size={24} color="#0284c7" />
+                <h4>5+ Years Expert Mechanics</h4>
+                <p>Background-verified, company-trained appliance engineers.</p>
+              </div>
+            </div>
+
+            <div className="faq-block" style={{ marginTop: '2.5rem' }}>
+              <h3>Frequently Asked Questions in {matchedLocation}</h3>
+              <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <h4 style={{ margin: '0 0 0.5rem 0', color: '#0f172a' }}>
+                    How quickly can an engineer arrive in {matchedLocation}?
+                  </h4>
+                  <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem' }}>
+                    Our engineers cover {matchedLocation} continuously and typically arrive within 60 to 90 minutes of receiving your booking.
+                  </p>
+                </div>
+                <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <h4 style={{ margin: '0 0 0.5rem 0', color: '#0f172a' }}>
+                    Are replacement parts for {matchedBrand} authentic?
+                  </h4>
+                  <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem' }}>
+                    Yes, we use brand-certified components for {matchedBrand} units, and all fitted parts carry a 30 to 90-day warranty.
+                  </p>
+                </div>
               </div>
             </div>
 
