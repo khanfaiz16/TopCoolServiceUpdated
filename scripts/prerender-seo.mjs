@@ -27,7 +27,6 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// Fixed relative paths: scripts/ -> ../src/data/
 import { siteConfig, staticPageMeta, absoluteUrl } from '../src/data/seoConfig.js';
 import { servicesList, faqsData } from '../src/data/siteData.js';
 import { applianceServiceSchema, faqPageSchema, defaultSchema } from '../src/data/schema.js';
@@ -36,7 +35,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
 
 const escapeAttr = (value) =>
-  String(value)
+  String(value ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -45,30 +44,36 @@ const escapeAttr = (value) =>
 // Prevents a "</script>" inside any string from terminating the JSON-LD block.
 const serializeJsonLd = (data) => JSON.stringify(data).replace(/</g, '\\u003c');
 
-/** Structured data for a route, reusing the app's own builders. */
+/** Structured data for a route, reusing the app's own builders safely. */
 function schemaFor(path) {
-  if (path === '/faq/') return faqPageSchema(faqsData);
+  let result;
 
-  const service = servicesList.find((s) => `/${s.slug}/` === path);
-  if (service) return applianceServiceSchema(service);
+  if (path === '/faq/') {
+    result = typeof faqPageSchema === 'function' ? faqPageSchema(faqsData) : faqPageSchema;
+  } else {
+    const service = (servicesList || []).find((s) => `/${s.slug}/` === path);
+    if (service) {
+      result = typeof applianceServiceSchema === 'function' ? applianceServiceSchema(service) : applianceServiceSchema;
+    } else {
+      result = typeof defaultSchema === 'function' ? defaultSchema() : defaultSchema;
+    }
+  }
 
-  // defaultSchema() returns a schema object, wrapped here as an array for the loop
-  const def = typeof defaultSchema === 'function' ? defaultSchema() : defaultSchema;
-  return Array.isArray(def) ? def : [def];
+  if (!result) return [];
+  return Array.isArray(result) ? result : [result];
 }
 
 /** Every route that should be prerendered and listed in the sitemap. */
 function collectRoutes() {
-  const routes = Object.entries(staticPageMeta).map(([path, meta]) => ({
+  return Object.entries(staticPageMeta || {}).map(([path, meta]) => ({
     path,
     title: meta.title,
     description: meta.description,
     keywords: meta.keywords,
-    image: siteConfig.defaultImage,
-    priority: meta.priority,
+    image: meta.image || siteConfig.defaultImage,
+    priority: meta.priority || (path === '/' ? '1.0' : '0.8'),
+    changefreq: meta.changefreq || (path === '/' ? 'weekly' : 'monthly'),
   }));
-
-  return routes;
 }
 
 function buildHead(route) {
@@ -94,7 +99,8 @@ function buildHead(route) {
     `<meta name="twitter:image" content="${escapeAttr(image)}" />`,
   ].filter(Boolean);
 
-  for (const block of schemaFor(route.path)) {
+  const schemas = schemaFor(route.path);
+  for (const block of schemas) {
     tags.push(`<script type="application/ld+json">${serializeJsonLd(block)}</script>`);
   }
 
@@ -107,8 +113,6 @@ function buildHead(route) {
  */
 function stripManagedTags(html) {
   return html
-    // Drop the authoring comments from index.html; they document the source
-    // file and are dead weight on every generated page.
     .replace(/\s*<!--[\s\S]*?-->/g, '')
     .replace(/\s*<title>[\s\S]*?<\/title>/gi, '')
     .replace(/\s*<meta\s+name="(description|keywords|twitter:[a-z]+)"[^>]*>/gi, '')
@@ -135,8 +139,8 @@ async function main() {
   }
 
   const routes = collectRoutes();
-
   const seen = new Set();
+
   for (const route of routes) {
     if (seen.has(route.path)) {
       console.error(`[prerender-seo] Duplicate route in metadata: ${route.path}`);
@@ -157,12 +161,13 @@ async function main() {
     await writeFile(outFile, html, 'utf8');
   }
 
+  const today = new Date().toISOString().split('T')[0];
   const sitemap = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ...routes.map(
       (route) =>
-        `  <url><loc>${absoluteUrl(route.path)}</loc><priority>${route.priority || '0.8'}</priority></url>`
+        `  <url>\n    <loc>${absoluteUrl(route.path)}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${route.changefreq}</changefreq>\n    <priority>${route.priority}</priority>\n  </url>`
     ),
     '</urlset>',
     '',
