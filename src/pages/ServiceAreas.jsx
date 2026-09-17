@@ -42,48 +42,58 @@ export default function ServiceAreas() {
       <section className="section container">
         {/* Coverage Cards Grid */}
         <div className="areas-grid">
-          {serviceAreas.map((area) => (
-            <div
-              key={area}
-              onClick={() => handleAreaSelect(area)}
-              className={`area-card ${selectedArea === area ? 'active' : ''}`}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && handleAreaSelect(area)}
-              style={{
-                cursor: 'pointer',
-                borderColor: selectedArea === area ? '#0284c7' : '#e2e8f0',
-                backgroundColor: selectedArea === area ? '#f0f9ff' : '#ffffff',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <MapPin size={24} color={selectedArea === area ? '#0284c7' : '#64748b'} />
-              <h3>{area}</h3>
-              <p>Doorstep AC, Fridge, Washing Machine, and Microwave repairs.</p>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleAreaSelect(area);
-                }}
+          {serviceAreas.map((area) => {
+            const isSelected = selectedArea === area;
+            return (
+              <div
+                key={area}
+                onClick={() => handleAreaSelect(area)}
+                className={`area-card ${isSelected ? 'active' : ''}`}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && handleAreaSelect(area)}
                 style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  fontSize: '0.85rem',
-                  color: '#0284c7',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  marginTop: '0.75rem',
                   cursor: 'pointer',
+                  borderColor: isSelected ? 'var(--primary)' : 'var(--border-card)',
+                  backgroundColor: isSelected ? 'var(--bg-card-hover)' : 'var(--bg-card)',
+                  boxShadow: isSelected ? 'var(--shadow-glow)' : 'var(--shadow-sm)',
+                  transform: isSelected ? 'translateY(-4px)' : 'none',
+                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
-                View Local Services <ChevronRight size={14} />
-              </button>
-            </div>
-          ))}
+                <MapPin size={24} color={isSelected ? 'var(--primary)' : 'var(--primary-light)'} />
+                <h3 style={{ color: '#ffffff', margin: '0.6rem 0 0.4rem 0', fontSize: '1.25rem', fontWeight: 700 }}>
+                  {area}
+                </h3>
+                <p style={{ color: 'var(--text-body)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
+                  Doorstep AC, Fridge, Washing Machine, and Microwave repairs.
+                </p>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAreaSelect(area);
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: 0,
+                    fontSize: '0.88rem',
+                    color: 'var(--primary-light)',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    marginTop: '0.75rem',
+                    cursor: 'pointer',
+                    transition: 'color 0.2s ease',
+                  }}
+                >
+                  View Local Services <ChevronRight size={14} />
+                </button>
+              </div>
+            );
+          })}
         </div>
 
         {/* Anchor Target for Smooth Scroll */}
@@ -93,19 +103,19 @@ export default function ServiceAreas() {
           style={{
             marginTop: '3.5rem',
             padding: '2rem',
-            background: '#f8fafc',
+            background: 'var(--bg-surface)',
             borderRadius: '12px',
-            border: '1px solid #e2e8f0',
-            scrollMarginTop: '90px', // Prevents navbar from covering header
+            border: '1px solid var(--border-accent)',
+            scrollMarginTop: '90px',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
-            <Wrench size={22} color="#0284c7" />
-            <h2 style={{ fontSize: '1.4rem', margin: 0, color: '#0f172a' }}>
+            <Wrench size={22} color="var(--primary-light)" />
+            <h2 style={{ fontSize: '1.4rem', margin: 0, color: 'var(--text-main)' }}>
               Specialized Doorstep Repairs in {selectedArea}
             </h2>
           </div>
-          <p style={{ color: '#475569', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+          <p style={{ color: 'var(--text-body)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
             Direct dispatch units ready in {selectedArea}. Select your appliance and brand below for genuine OEM parts and warranty coverage:
           </p>
 
@@ -114,18 +124,20 @@ export default function ServiceAreas() {
               <div
                 key={srv.slug}
                 style={{
-                  background: '#ffffff',
+                  background: 'var(--bg-card)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
                   padding: '1.25rem',
                   borderRadius: '8px',
-                  border: '1px solid #cbd5e1',
+                  border: '1px solid var(--border-card)',
                 }}
               >
                 <h3
                   style={{
                     fontSize: '1.05rem',
                     margin: '0 0 0.75rem 0',
-                    color: '#1e293b',
-                    borderBottom: '1px solid #f1f5f9',
+                    color: '#ffffff',
+                    borderBottom: '1px solid var(--border-subtle)',
                     paddingBottom: '0.5rem',
                   }}
                 >
@@ -148,15 +160,22 @@ export default function ServiceAreas() {
                         <Link
                           to={`/repair/${pageSlug}/`}
                           style={{
-                            color: '#0284c7',
+                            color: 'var(--primary-light)',
                             textDecoration: 'none',
                             fontSize: '0.9rem',
                             display: 'flex',
                             alignItems: 'center',
                             gap: '4px',
+                            transition: 'var(--transition)',
                           }}
-                          onMouseOver={(e) => (e.target.style.textDecoration = 'underline')}
-                          onMouseOut={(e) => (e.target.style.textDecoration = 'none')}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.color = '#ffffff';
+                            e.currentTarget.style.transform = 'translateX(3px)';
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.color = 'var(--primary-light)';
+                            e.currentTarget.style.transform = 'translateX(0)';
+                          }}
                         >
                           <ChevronRight size={12} /> {brand} {srv.title.replace(' & Service', '')} in {selectedArea}
                         </Link>

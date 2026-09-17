@@ -1,56 +1,170 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-* {
+:root {
+  /* Electric Emerald & Carbon Palette */
+  --bg-main: #090d0b;
+  --bg-surface: rgba(16, 24, 20, 0.82);
+  --bg-card: rgba(19, 31, 25, 0.72);
+  --bg-card-hover: rgba(26, 44, 35, 0.9);
+
+  --primary: #10b981;
+  --primary-light: #34d399;
+  --primary-glow: rgba(16, 185, 129, 0.32);
+  --primary-dark: #059669;
+
+  --accent-cyan: #06b6d4;
+  --accent-green: #10b981;
+  --accent-whatsapp: #25d366;
+  --accent-amber: #f59e0b;
+
+  --text-main: #f8fafc;
+  --text-body: #94a3b8;
+  --text-light: #cbd5e1;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(16, 185, 129, 0.28);
+  --border-card: rgba(16, 185, 129, 0.18);
+
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 8px 32px rgba(16, 185, 129, 0.22);
+  --shadow-card: 0 10px 36px rgba(0, 0, 0, 0.5);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Reset */
+*, *::before, *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 85px;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  margin: 0;
-  font-family: "Inter", Arial, Helvetica, sans-serif;
-  color: #142033;
-  background: #ffffff;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  font-family: var(--font-body);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
 }
 
-button,
-input,
-textarea,
-select {
-  font-family: inherit;
+/* Hardware-Accelerated Ambient Animated Plasma Wave */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(90px);
+  will-change: transform;
 }
 
-a {
-  font-family: inherit;
+/* Primary Vibrant Emerald Orb */
+body::before {
+  top: -10%;
+  left: -5%;
+  width: 62vw;
+  height: 62vw;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.12) 50%, transparent 70%);
+  animation: floatEmeraldCore 20s ease-in-out infinite alternate;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Inter", Arial, Helvetica, sans-serif;
-  letter-spacing: -0.025em;
+/* Secondary Deep Mint / Teal Accent Orb */
+body::after {
+  bottom: -15%;
+  right: -5%;
+  width: 68vw;
+  height: 68vw;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.15) 0%, rgba(6, 182, 212, 0.08) 45%, transparent 70%);
+  animation: floatMintCore 26s ease-in-out infinite alternate;
 }
 
-h1 {
-  font-weight: 800;
+@keyframes floatEmeraldCore {
+  0% {
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  }
+  50% {
+    transform: translate3d(18vw, 15vh, 0) scale3d(1.12, 1.12, 1);
+  }
+  100% {
+    transform: translate3d(5vw, 30vh, 0) scale3d(0.92, 0.92, 1);
+  }
 }
 
-h2 {
-  font-weight: 800;
+@keyframes floatMintCore {
+  0% {
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  }
+  50% {
+    transform: translate3d(-20vw, -18vh, 0) scale3d(1.15, 1.15, 1);
+  }
+  100% {
+    transform: translate3d(-8vw, -35vh, 0) scale3d(0.95, 0.95, 1);
+  }
 }
 
-h3 {
+/* Typography Base */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-main);
   font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
 }
 
 p {
-  font-weight: 400;
-  line-height: 1.7;
+  color: var(--text-body);
+}
+
+a {
+  color: var(--primary-light);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  color: #ffffff;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Base Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #192620;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
