@@ -1,0 +1,10 @@
+{
+  "cleanUrls": false,
+  "trailingSlash": true,
+  "rewrites": [
+    {
+      "source": "/((?!assets/|images/|.*\\..*).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
