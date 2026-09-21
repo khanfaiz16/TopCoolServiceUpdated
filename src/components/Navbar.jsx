@@ -13,7 +13,7 @@ export default function Navbar() {
     <header className="site-header">
       <div className="container nav-container">
         <Link to="/" className="brand-logo" onClick={closeMenu}>
-          <Wrench size={24} color="#0284c7" />
+          <Wrench size={24} />
           <div>
             <span className="brand-name">Top Cool Service</span>
             <span className="brand-tag">Appliance Experts</span>
@@ -26,16 +26,17 @@ export default function Navbar() {
           <NavLink to="/about/" onClick={closeMenu}>About</NavLink>
           <NavLink to="/services/" onClick={closeMenu}>Services</NavLink>
           <NavLink to="/service-areas/" onClick={closeMenu}>Areas</NavLink>
+          <NavLink to="/blog/" onClick={closeMenu}>Guides</NavLink>
           <NavLink to="/faq/" onClick={closeMenu}>FAQ</NavLink>
           <NavLink to="/contact/" onClick={closeMenu}>Contact</NavLink>
         </nav>
 
-        {/* Single Contact Button & Mobile Hamburger */}
+        {/* Single Call Button & Mobile Hamburger Toggle */}
         <div className="nav-actions">
           <a
             href={`tel:${contactDetails.phoneRaw}`}
             className="btn btn-call-nav"
-            onClick={() => logEvent('Click Desktop Nav Call Button', 'Engagement')}
+            onClick={() => logEvent('Click Nav Call Button', 'Engagement')}
           >
             <Phone size={16} /> {contactDetails.phone}
           </a>

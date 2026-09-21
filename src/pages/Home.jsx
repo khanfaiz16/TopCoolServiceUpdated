@@ -15,10 +15,10 @@ export default function Home() {
   };
 
   return (
-    <div>
+    <div className="home-page">
       <SEO {...getPageMeta('/')} />
 
-      {/* Hero Section with Online Background */}
+      {/* Hero Section with Ambient Background */}
       <section className="hero-section">
         <div className="hero-overlay">
           <div className="container hero-content">
@@ -91,11 +91,12 @@ export default function Home() {
         <div className="container">
           <h2 className="section-title">Locations We Cover Across Mumbai</h2>
           <p className="section-subtitle">Prompt doorstep arrival in Western, Central, and South Mumbai</p>
-          <div className="areas-grid">
+          <div className="home-locations-grid">
             {serviceAreas.map((area) => (
-              <div key={area} className="area-pill">
-                <MapPin size={16} /> <span>{area}</span>
-              </div>
+              <Link to="/service-areas/" key={area} className="home-location-pill">
+                <MapPin size={18} className="location-pin-icon" />
+                <span>{area}</span>
+              </Link>
             ))}
           </div>
         </div>
@@ -117,7 +118,9 @@ export default function Home() {
                   key={i}
                   className={`faq-item ${isOpen ? 'active open' : ''}`}
                   onClick={() => toggleFaq(i)}
-                  style={{ cursor: 'pointer' }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && toggleFaq(i)}
                 >
                   <div className="faq-q">
                     <h4>{f.q}</h4>

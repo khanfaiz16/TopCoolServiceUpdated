@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { siteConfig, staticPageMeta, absoluteUrl } from '../src/data/seoConfig.js';
 import { servicesList, serviceAreas, allBrands, contactDetails, faqsData } from '../src/data/siteData.js';
 import { applianceServiceSchema, faqPageSchema, defaultSchema } from '../src/data/schema.js';
+import { blogPosts } from '../src/data/blogData.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
@@ -100,6 +101,52 @@ function buildProgrammaticSchema(brand, service, location, path) {
   ];
 }
 
+/** Builds rich BlogPosting & FAQ schemas for blog articles */
+function buildBlogPostSchema(post) {
+  const schemas = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      datePublished: post.publishDate,
+      author: {
+        '@type': 'Organization',
+        name: post.author || 'Top Cool Service Technical Team',
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Top Cool Service',
+        logo: {
+          '@type': 'ImageObject',
+          url: absoluteUrl('/favicon.svg'),
+        },
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': absoluteUrl(`/blog/${post.slug}/`),
+      },
+    },
+  ];
+
+  if (Array.isArray(post.faqs) && post.faqs.length > 0) {
+    schemas.push({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: post.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.q,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.a,
+        },
+      })),
+    });
+  }
+
+  return schemas;
+}
+
 /** Resolves schema for static routes */
 function schemaFor(path) {
   if (path === '/faq/') return typeof faqPageSchema === 'function' ? faqPageSchema(faqsData) : faqPageSchema;
@@ -109,7 +156,7 @@ function schemaFor(path) {
   return Array.isArray(def) ? def : [def];
 }
 
-/** Collects static and programmatic routes */
+/** Collects static, programmatic, and blog routes */
 function collectAllRoutes() {
   const routes = Object.entries(staticPageMeta || {}).map(([path, meta]) => ({
     path,
@@ -121,6 +168,35 @@ function collectAllRoutes() {
     changefreq: meta.changefreq || 'weekly',
     schemas: schemaFor(path),
   }));
+
+  // Ensure /blog/ index route exists
+  if (!routes.some((r) => r.path === '/blog/')) {
+    routes.push({
+      path: '/blog/',
+      title: 'Appliance Repair Guides & Troubleshooting Tips | Top Cool Service',
+      description: 'Expert DIY diagnostic guides, error code solutions, and maintenance insights by certified Mumbai technicians.',
+      keywords: 'appliance repair blog, ac troubleshooting guide, washing machine error codes, fridge repair tips mumbai',
+      image: siteConfig.defaultImage,
+      priority: '0.8',
+      changefreq: 'weekly',
+      schemas: typeof defaultSchema === 'function' ? defaultSchema() : defaultSchema,
+    });
+  }
+
+  // Dynamic Blog Article Routes (/blog/:slug/)
+  for (const post of blogPosts || []) {
+    routes.push({
+      path: `/blog/${post.slug}/`,
+      title: `${post.title} | Top Cool Service Mumbai`,
+      description: post.excerpt,
+      keywords: `${post.category.toLowerCase()} repair mumbai, ${post.slug.replace(/-/g, ' ')}, doorstep diagnostic guide`,
+      image: post.image || siteConfig.defaultImage,
+      priority: '0.7',
+      changefreq: 'monthly',
+      schemas: buildBlogPostSchema(post),
+      lastmod: post.publishDate,
+    });
+  }
 
   // Programmatic generation: Services x Brands x Locations
   for (const srv of servicesList) {
@@ -223,7 +299,7 @@ async function main() {
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ...routes.map(
       (route) =>
-        `  <url>\n    <loc>${absoluteUrl(route.path)}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${route.changefreq}</changefreq>\n    <priority>${route.priority}</priority>\n  </url>`
+        `  <url>\n    <loc>${absoluteUrl(route.path)}</loc>\n    <lastmod>${route.lastmod || today}</lastmod>\n    <changefreq>${route.changefreq}</changefreq>\n    <priority>${route.priority}</priority>\n  </url>`
     ),
     '</urlset>',
     '',

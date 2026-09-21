@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Clock, Wrench, Sparkles, ShieldCheck } from 'lucide-react';
-import { contactDetails, servicesList, serviceAreas } from '../data/siteData';
+import { MapPin, Phone, Mail, Clock, Wrench, Sparkles } from 'lucide-react';
+import { contactDetails, servicesList } from '../data/siteData';
 
 const popularLocalSearches = [
   { label: 'Bosch AC Repair in Kalina', path: '/repair/bosch-ac-repair-in-kalina/' },
@@ -25,7 +25,7 @@ export default function Footer() {
         {/* Company Column */}
         <div>
           <div className="footer-logo">
-            <Wrench size={22} color="#38bdf8" />
+            <Wrench size={22} />
             <h3 className="footer-title">Top Cool Service</h3>
           </div>
           <p className="footer-text">
@@ -44,6 +44,7 @@ export default function Footer() {
             <li><Link to="/about/">About Company</Link></li>
             <li><Link to="/services/">All Services</Link></li>
             <li><Link to="/service-areas/">Mumbai Service Areas</Link></li>
+            <li><Link to="/blog/">Troubleshooting Guides</Link></li>
             <li><Link to="/faq/">Frequently Asked Questions</Link></li>
             <li><Link to="/contact/">Book Technician</Link></li>
           </ul>
@@ -65,33 +66,31 @@ export default function Footer() {
         <div>
           <h4>Contact Us</h4>
           <div className="contact-item">
-            <MapPin size={18} color="#38bdf8" />
+            <MapPin size={18} />
             <span>{contactDetails.address}</span>
           </div>
           <div className="contact-item">
-            <Phone size={18} color="#38bdf8" />
+            <Phone size={18} />
             <a href={`tel:${contactDetails.phoneRaw}`}>{contactDetails.phone}</a>
           </div>
           <div className="contact-item">
-            <Mail size={18} color="#38bdf8" />
+            <Mail size={18} />
             <a href={`mailto:${contactDetails.email}`}>{contactDetails.email}</a>
           </div>
         </div>
       </div>
 
       {/* Programmatic Hyper-Local Search Discovery Grid */}
-      <div className="container footer-seo-section" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
-        <h5 style={{ color: '#94a3b8', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.8rem' }}>
+      <div className="container footer-seo-section">
+        <h5 className="footer-seo-title">
           Popular Doorstep Appliance Repair Locations
         </h5>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px' }}>
+        <div className="footer-seo-tags">
           {popularLocalSearches.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              style={{ color: '#64748b', fontSize: '0.8rem', textDecoration: 'none' }}
-              onMouseOver={(e) => (e.target.style.color = '#38bdf8')}
-              onMouseOut={(e) => (e.target.style.color = '#64748b')}
+              className="footer-seo-link"
             >
               {item.label}
             </Link>

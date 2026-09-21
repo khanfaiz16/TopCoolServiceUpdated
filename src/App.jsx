@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 
 // Global Layout Components
 import Navbar from './components/Navbar';
@@ -17,6 +17,10 @@ import FAQ from './pages/FAQ';
 import ServiceAreas from './pages/ServiceAreas';
 import NotFound from './pages/NotFound';
 
+// Blog System Pages
+import BlogIndex from './pages/BlogIndex';
+import BlogPost from './pages/BlogPost';
+
 // Static Individual Appliance Pages
 import ACRepair from './pages/ACRepair';
 import RefrigeratorRepair from './pages/RefrigeratorRepair';
@@ -31,7 +35,7 @@ import LocationBrandService from './pages/LocationBrandService';
 export default function App() {
   const location = useLocation();
 
-  // Automatically track every page transition in Google Analytics
+  // Automatically track page transitions in Google Analytics
   useEffect(() => {
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('event', 'page_view', {
@@ -50,13 +54,17 @@ export default function App() {
 
       <main className="main-content">
         <Routes>
-          {/* Main Info Pages */}
+          {/* Main Informational Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/about/" element={<About />} />
           <Route path="/services/" element={<Services />} />
           <Route path="/contact/" element={<Contact />} />
           <Route path="/faq/" element={<FAQ />} />
           <Route path="/service-areas/" element={<ServiceAreas />} />
+
+          {/* Blog & Troubleshooting Guides Routes */}
+          <Route path="/blog/" element={<BlogIndex />} />
+          <Route path="/blog/:slug/" element={<BlogPost />} />
 
           {/* Standard Appliance Routes */}
           <Route path="/ac-repair/" element={<ACRepair />} />
@@ -67,10 +75,6 @@ export default function App() {
           <Route path="/dishwasher-repair/" element={<DishwasherRepair />} />
 
           {/* Programmatic SEO Dynamic Route */}
-          {/* Matches URLs like: /repair/haier-ac-repair-in-juhu/
-              React Router only supports dynamic params that span a whole path
-              segment, so the combined slug is captured in one param here and
-              split inside LocationBrandService. */}
           <Route path="/repair/:pageSlug/" element={<LocationBrandService />} />
 
           {/* Fallback 404 Route */}
@@ -78,10 +82,9 @@ export default function App() {
         </Routes>
       </main>
 
-      {/* Global Footer */}
+      {/* Global Footer & Analytics */}
       <Footer />
-      <Analytics/>
-
+      <Analytics />
 
       {/* Persistent Call & WhatsApp Buttons */}
       <FloatingActions />
