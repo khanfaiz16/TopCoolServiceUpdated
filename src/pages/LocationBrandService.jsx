@@ -1,9 +1,21 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { CheckCircle, Shield, Clock, MapPin, Phone, MessageCircle, Wrench, Award } from 'lucide-react';
+import { CheckCircle, Shield, Clock, Phone, MessageCircle, Wrench, Award, AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
 import BookingForm from './BookingForm';
 import { servicesList, serviceAreas, allBrands, contactDetails } from '../data/siteData';
+
+// Local geographical environmental factors to beat Google's "Duplicate/Thin Content" filter
+const regionalInsights = {
+  bandra: 'Homes along coastal belts like Bandra and Khar frequently experience accelerated salt-air corrosion on outdoor copper condenser coils and PCB solder joints. Our local team carries anti-corrosive blue-fin coated replacement parts.',
+  juhu: 'Due to humid beachside atmosphere, electrical sensors and defrost timers require specialized moisture-sealed diagnostics to prevent recurring short-circuits.',
+  andheri: 'As a high-density transit zone, our mobile vans stationed near Western Express Highway & Metro corridors ensure emergency 60-minute doorstep arrival across Andheri East and West.',
+  bkc: 'Targeted support for corporate setups, server room split cooling units, and high-capacity luxury home appliances with digital manifold inspection tools.',
+  virar: 'Addresses frequent seasonal voltage variations and power spikes with heavy-duty voltage-regulated relays and factory inverter motor controllers.',
+  vasai: 'Rapid doorstep response for residential townships with fully stocked genuine spares for front-load drain motors and compressor kits.',
+  dahisar: 'Immediate localized dispatch from our North Mumbai hub, specializing in quick turnaround compressor brazing and nitrogen leakage detection.',
+  default: 'Our localized mobile service engineering unit carries genuine factory diagnostic equipment and original spare parts for immediate first-visit resolution.'
+};
 
 export default function LocationBrandService() {
   const { pageSlug } = useParams();
@@ -25,6 +37,9 @@ export default function LocationBrandService() {
     allBrands.find((b) => normalize(b) === normalize(brandSlug)) || titleCase(brandSlug);
   const matchedLocation =
     serviceAreas.find((loc) => normalize(loc) === normalize(locationSlug)) || titleCase(locationSlug);
+
+  const locKey = normalize(matchedLocation);
+  const locationSpecificAdvice = regionalInsights[locKey] || regionalInsights.default;
 
   const pageTitle = `${matchedBrand} ${service.title} in ${matchedLocation}, Mumbai | Top Cool Service`;
   const metaDescription = `Need expert ${matchedBrand} ${service.title.toLowerCase()} in ${matchedLocation}? Doorstep technician in 60-90 mins, genuine ${matchedBrand} spare parts, upfront pricing & warranty.`;
@@ -138,14 +153,23 @@ export default function LocationBrandService() {
 
             <h2>Doorstep {matchedBrand} Specialist in {matchedLocation}</h2>
             <p className="lead-text">
-              Looking for reliable {matchedBrand} {service.title.toLowerCase()} near {matchedLocation}? Top Cool Service provides fast, factory-grade repairs directly at your home. Our vans carry genuine {matchedBrand} diagnostic tools and factory parts to ensure your appliance is restored on the very first visit.
+              Looking for reliable {matchedBrand} {service.title.toLowerCase()} near {matchedLocation}? Top Cool Service provides fast, factory-grade repairs directly at your home. Our mobile units carry genuine {matchedBrand} diagnostic tools and factory parts to ensure your appliance is restored on the very first visit.
             </p>
+
+            {/* Local Context Box (Key to indexation) */}
+            <div className="local-hub-card local-context-box">
+              <div className="local-hub-header">
+                <AlertCircle size={20} className="local-hub-icon" />
+                <h4 className="local-hub-card-title">Localized Diagnostic Insight for {matchedLocation}</h4>
+              </div>
+              <p className="area-card-text">{locationSpecificAdvice}</p>
+            </div>
 
             <h3>Common {matchedBrand} {service.title} Problems We Fix:</h3>
             <ul className="feature-list">
               {service.issues.map((issue, idx) => (
                 <li key={idx}>
-                  <CheckCircle size={20} color="#16a34a" />
+                  <CheckCircle size={20} className="feature-icon-check" />
                   <span>{matchedBrand} {issue}</span>
                 </li>
               ))}
@@ -153,43 +177,43 @@ export default function LocationBrandService() {
 
             <div className="service-perks-grid">
               <div className="perk-box">
-                <Clock size={24} color="#0284c7" />
+                <Clock size={24} />
                 <h4>60-90 Min Arrival in {matchedLocation}</h4>
                 <p>Fast dispatch throughout {matchedLocation} and adjacent suburbs.</p>
               </div>
               <div className="perk-box">
-                <Shield size={24} color="#0284c7" />
+                <Shield size={24} />
                 <h4>Authentic {matchedBrand} Parts</h4>
                 <p>Genuine factory spares backed by a 30 to 90-day replacement warranty.</p>
               </div>
               <div className="perk-box">
-                <Wrench size={24} color="#0284c7" />
+                <Wrench size={24} />
                 <h4>Diagnostic Guarantee</h4>
                 <p>Inspection charge waived if you proceed with our repair estimate.</p>
               </div>
               <div className="perk-box">
-                <Award size={24} color="#0284c7" />
+                <Award size={24} />
                 <h4>5+ Years Expert Mechanics</h4>
                 <p>Background-verified, company-trained appliance engineers.</p>
               </div>
             </div>
 
-            <div className="faq-block" style={{ marginTop: '2.5rem' }}>
-              <h3>Frequently Asked Questions in {matchedLocation}</h3>
-              <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ margin: '0 0 0.5rem 0', color: '#0f172a' }}>
+            <div className="blog-faq-section">
+              <h3 className="blog-faq-title">Frequently Asked Questions in {matchedLocation}</h3>
+              <div className="blog-faq-list">
+                <div className="blog-faq-card">
+                  <h4 className="blog-faq-q">
                     How quickly can an engineer arrive in {matchedLocation}?
                   </h4>
-                  <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem' }}>
+                  <p className="blog-faq-a">
                     Our engineers cover {matchedLocation} continuously and typically arrive within 60 to 90 minutes of receiving your booking.
                   </p>
                 </div>
-                <div style={{ background: '#f8fafc', padding: '1.2rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <h4 style={{ margin: '0 0 0.5rem 0', color: '#0f172a' }}>
+                <div className="blog-faq-card">
+                  <h4 className="blog-faq-q">
                     Are replacement parts for {matchedBrand} authentic?
                   </h4>
-                  <p style={{ margin: 0, color: '#475569', fontSize: '0.95rem' }}>
+                  <p className="blog-faq-a">
                     Yes, we use brand-certified components for {matchedBrand} units, and all fitted parts carry a 30 to 90-day warranty.
                   </p>
                 </div>

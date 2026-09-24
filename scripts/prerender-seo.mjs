@@ -26,7 +26,6 @@ const slugify = (text) =>
     .replace(/\s+/g, '-')
     .replace(/[^\w-]+/g, '');
 
-/** Builds localized schemas for programmatic landing pages */
 function buildProgrammaticSchema(brand, service, location, path) {
   return [
     {
@@ -101,7 +100,6 @@ function buildProgrammaticSchema(brand, service, location, path) {
   ];
 }
 
-/** Builds rich BlogPosting & FAQ schemas for blog articles */
 function buildBlogPostSchema(post) {
   const schemas = [
     {
@@ -147,7 +145,6 @@ function buildBlogPostSchema(post) {
   return schemas;
 }
 
-/** Resolves schema for static routes */
 function schemaFor(path) {
   if (path === '/faq/') return typeof faqPageSchema === 'function' ? faqPageSchema(faqsData) : faqPageSchema;
   const service = (servicesList || []).find((s) => `/${s.slug}/` === path);
@@ -156,7 +153,6 @@ function schemaFor(path) {
   return Array.isArray(def) ? def : [def];
 }
 
-/** Collects static, programmatic, and blog routes */
 function collectAllRoutes() {
   const routes = Object.entries(staticPageMeta || {}).map(([path, meta]) => ({
     path,
@@ -169,12 +165,12 @@ function collectAllRoutes() {
     schemas: schemaFor(path),
   }));
 
-  // Ensure /blog/ index route exists
+  // Ensure /blog/ is added
   if (!routes.some((r) => r.path === '/blog/')) {
     routes.push({
       path: '/blog/',
-      title: 'Appliance Repair Guides & Troubleshooting Tips | Top Cool Service',
-      description: 'Expert DIY diagnostic guides, error code solutions, and maintenance insights by certified Mumbai technicians.',
+      title: 'Official Blog | Appliance Maintenance & News | Top Cool Service',
+      description: 'Expert diagnostic guides, error code solutions, and maintenance insights by certified Mumbai technicians.',
       keywords: 'appliance repair blog, ac troubleshooting guide, washing machine error codes, fridge repair tips mumbai',
       image: siteConfig.defaultImage,
       priority: '0.8',
@@ -187,21 +183,28 @@ function collectAllRoutes() {
   for (const post of blogPosts || []) {
     routes.push({
       path: `/blog/${post.slug}/`,
-      title: `${post.title} | Top Cool Service Mumbai`,
+      title: `${post.title} | Top Cool Service Blog`,
       description: post.excerpt,
       keywords: `${post.category.toLowerCase()} repair mumbai, ${post.slug.replace(/-/g, ' ')}, doorstep diagnostic guide`,
       image: post.image || siteConfig.defaultImage,
-      priority: '0.7',
+      priority: '0.8',
       changefreq: 'monthly',
       schemas: buildBlogPostSchema(post),
       lastmod: post.publishDate,
     });
   }
 
-  // Programmatic generation: Services x Brands x Locations
-  for (const srv of servicesList) {
-    for (const brand of allBrands) {
-      for (const loc of serviceAreas) {
+  // Priority Crawl Budget Optimization:
+  // Focus initial programmatic SEO on the highest-demand Mumbai hubs to eliminate crawl budget exhaustion
+  const priorityHubs = ['Bandra', 'Andheri', 'BKC', 'Kalina', 'Juhu', 'Powai', 'Dahisar', 'Thane'];
+  const priorityServices = servicesList.filter((s) =>
+    ['ac-repair', 'refrigerator-repair', 'washing-machine-repair'].includes(s.slug)
+  );
+  const priorityBrands = ['Samsung', 'LG', 'Whirlpool', 'Bosch', 'Voltas', 'Daikin'];
+
+  for (const srv of priorityServices) {
+    for (const brand of priorityBrands) {
+      for (const loc of priorityHubs) {
         const slug = `${slugify(brand)}-${srv.slug}-in-${slugify(loc)}`;
         const path = `/repair/${slug}/`;
 
@@ -211,7 +214,7 @@ function collectAllRoutes() {
           description: `Certified ${brand} ${srv.title.toLowerCase()} in ${loc}, Mumbai. Doorstep technician in 60-90 mins, genuine spare parts, and service warranty.`,
           keywords: `${brand} ${srv.slug} ${loc}, ${brand} service center ${loc}, doorstep ${brand} repair`,
           image: srv.image || siteConfig.defaultImage,
-          priority: '0.8',
+          priority: '0.7',
           changefreq: 'monthly',
           schemas: buildProgrammaticSchema(brand, srv, loc, path),
         });

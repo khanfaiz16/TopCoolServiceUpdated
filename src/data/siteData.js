@@ -4,7 +4,7 @@ export const contactDetails = {
   whatsappRaw: '919920435051',
   email: 'mhussainkhan34@gmail.com',
   address: 'Dahisar, Mumbai, Maharashtra',
-  formspreeId: 'mppzlepb', // Replace with your Formspree form ID
+  formspreeId: 'mppzlepb',
 };
 
 export const serviceAreas = [
