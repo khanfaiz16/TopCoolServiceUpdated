@@ -5,51 +5,74 @@ import SEO from '../components/SEO';
 import BookingForm from './BookingForm';
 import { servicesList, serviceAreas, allBrands, contactDetails } from '../data/siteData';
 
-// Local geographical environmental factors to beat Google's "Duplicate/Thin Content" filter
+// Local geographical environmental factors per Mumbai area[cite: 7]
 const regionalInsights = {
   bandra: 'Homes along coastal belts like Bandra and Khar frequently experience accelerated salt-air corrosion on outdoor copper condenser coils and PCB solder joints. Our local team carries anti-corrosive blue-fin coated replacement parts.',
   juhu: 'Due to humid beachside atmosphere, electrical sensors and defrost timers require specialized moisture-sealed diagnostics to prevent recurring short-circuits.',
   andheri: 'As a high-density transit zone, our mobile vans stationed near Western Express Highway & Metro corridors ensure emergency 60-minute doorstep arrival across Andheri East and West.',
   bkc: 'Targeted support for corporate setups, server room split cooling units, and high-capacity luxury home appliances with digital manifold inspection tools.',
-  virar: 'Addresses frequent seasonal voltage variations and power spikes with heavy-duty voltage-regulated relays and factory inverter motor controllers.',
-  vasai: 'Rapid doorstep response for residential townships with fully stocked genuine spares for front-load drain motors and compressor kits.',
+  kalina: 'Fast doorstep technician response near CST Road and University campus, stocked with genuine PCB relays and drain pump assemblies.',
+  santacruz: 'Specialized diagnostic tools for residential apartments near SV Road and Milan Subway, equipped for on-site nitrogen leak tests and compressor servicing.',
+  powai: 'High-rise residential complexes in Hiranandani and Powai lake belt often require specialized inverter board replacements and drum vibration damper balancing.',
   dahisar: 'Immediate localized dispatch from our North Mumbai hub, specializing in quick turnaround compressor brazing and nitrogen leakage detection.',
+  miraroad: 'Serving fast-growing residential hubs across Shanti Park and Beverly Park with heavy-duty voltage stabilizer checks and genuine washing machine tub bearings.',
+  vasai: 'Rapid doorstep response for residential townships with fully stocked genuine spares for front-load drain motors and compressor kits.',
+  virar: 'Addresses frequent seasonal voltage variations and power spikes with heavy-duty voltage-regulated relays and factory inverter motor controllers.',
+  nallsopara: 'Prompt appliance motor rewinding, thermostat replacement, and high-grade capacitor testing for top-load washers and direct-cool refrigerators.',
+  colaba: 'Heritage residential setups in South Mumbai frequently require precision maintenance on aging copper piping, moisture-proof wiring, and custom appliance fittings.',
+  'marine lines': 'South Mumbai marine-facing residences receive anti-rust coil servicing and chemical jet-wash cleaning to counter aggressive coastal salt breeze.',
+  thane: 'Full coverage from Ghodbunder Road to Majiwada, equipped for multi-split VRV diagnostics, gas charging, and microwave magnetron replacements.',
   default: 'Our localized mobile service engineering unit carries genuine factory diagnostic equipment and original spare parts for immediate first-visit resolution.'
 };
 
 export default function LocationBrandService() {
   const { pageSlug } = useParams();
 
-  const slug = pageSlug || '';
-  const separatorIndex = slug.lastIndexOf('-in-');
-  const brandAndService = separatorIndex > -1 ? slug.slice(0, separatorIndex) : slug;
-  const locationSlug = separatorIndex > -1 ? slug.slice(separatorIndex + 4) : '';
+  // 1. Clean the raw incoming URL
+  let rawSlug = (pageSlug || '').trim().replace(/^\/+|\/+$/g, '');
+  if (rawSlug.startsWith('repair/')) {
+    rawSlug = rawSlug.replace(/^repair\//, '');
+  }
+
+  // 2. Parse "-in-" pattern: [brand]-[service]-in-[location][cite: 7]
+  const separatorIndex = rawSlug.lastIndexOf('-in-');
+  const brandAndService = separatorIndex > -1 ? rawSlug.slice(0, separatorIndex) : rawSlug;
+  const locationSlug = separatorIndex > -1 ? rawSlug.slice(separatorIndex + 4) : '';
   const firstDash = brandAndService.indexOf('-');
   const brandSlug = firstDash > -1 ? brandAndService.slice(0, firstDash) : brandAndService;
   const serviceSlug = firstDash > -1 ? brandAndService.slice(firstDash + 1) : '';
 
-  const normalize = (value) => (value || '').toLowerCase().replace(/[\s-]+/g, ' ').trim();
-  const titleCase = (value) =>
-    normalize(value).replace(/\b\w/g, (character) => character.toUpperCase());
+  const normalize = (val) => (val || '').toLowerCase().replace(/[\s-]+/g, ' ').trim();
+  const titleCase = (val) =>
+    normalize(val).replace(/\b\w/g, (char) => char.toUpperCase());
 
-  const service = servicesList.find((s) => s.slug === serviceSlug) || servicesList[0];
+  // 3. Match against data lists or generate clean dynamic titles[cite: 7]
+  const service =
+    servicesList.find((s) => s.slug === serviceSlug || normalize(s.slug) === normalize(serviceSlug)) ||
+    servicesList.find((s) => s.slug.includes(serviceSlug) || (serviceSlug && serviceSlug.includes(s.slug))) ||
+    servicesList[0];
+
   const matchedBrand =
-    allBrands.find((b) => normalize(b) === normalize(brandSlug)) || titleCase(brandSlug);
+    allBrands.find((b) => normalize(b) === normalize(brandSlug)) ||
+    (brandSlug ? titleCase(brandSlug) : 'All Brand');
+
   const matchedLocation =
-    serviceAreas.find((loc) => normalize(loc) === normalize(locationSlug)) || titleCase(locationSlug);
+    serviceAreas.find((loc) => normalize(loc) === normalize(locationSlug)) ||
+    (locationSlug ? titleCase(locationSlug) : 'Mumbai');
 
   const locKey = normalize(matchedLocation);
   const locationSpecificAdvice = regionalInsights[locKey] || regionalInsights.default;
 
   const pageTitle = `${matchedBrand} ${service.title} in ${matchedLocation}, Mumbai | Top Cool Service`;
   const metaDescription = `Need expert ${matchedBrand} ${service.title.toLowerCase()} in ${matchedLocation}? Doorstep technician in 60-90 mins, genuine ${matchedBrand} spare parts, upfront pricing & warranty.`;
+  const canonicalUrl = `https://topcoolservice.com/repair/${rawSlug}/`;
 
-  // Localized Schema.org Structured Data
+  // 4. Schema Generation for Local SEO[cite: 7]
   const schemaData = [
     {
       "@context": "https://schema.org",
       "@type": "HomeAndConstructionBusiness",
-      "@id": `https://topcoolservice.com/#organization`,
+      "@id": "https://topcoolservice.com/#organization",
       "name": "Top Cool Service",
       "telephone": contactDetails.phoneRaw,
       "email": contactDetails.email,
@@ -91,7 +114,7 @@ export default function LocationBrandService() {
         "price": "299",
         "priceCurrency": "INR",
         "availability": "https://schema.org/InStock",
-        "url": `https://topcoolservice.com/repair/${slug}/`
+        "url": canonicalUrl
       }
     },
     {
@@ -125,7 +148,7 @@ export default function LocationBrandService() {
         description={metaDescription}
         keywords={`${matchedBrand} ${service.slug} ${matchedLocation}, ${matchedBrand} repair in ${matchedLocation}, doorstep ${matchedBrand} service Mumbai`}
         robots="index, follow"
-        canonical={`https://topcoolservice.com/repair/${slug}/`}
+        canonical={canonicalUrl}
         image={service.image}
         schemaData={schemaData}
       />
@@ -156,7 +179,6 @@ export default function LocationBrandService() {
               Looking for reliable {matchedBrand} {service.title.toLowerCase()} near {matchedLocation}? Top Cool Service provides fast, factory-grade repairs directly at your home. Our mobile units carry genuine {matchedBrand} diagnostic tools and factory parts to ensure your appliance is restored on the very first visit.
             </p>
 
-            {/* Local Context Box (Key to indexation) */}
             <div className="local-hub-card local-context-box">
               <div className="local-hub-header">
                 <AlertCircle size={20} className="local-hub-icon" />
